@@ -9,14 +9,15 @@ import java.io.IOException
 
 class CharactersPagingSource(
     private val api: Api,
-    private val query: String
+    private val query: String,
+    private val status: String
 ) : PagingSource<Int, com.example.rickandmorty.model.Character>() {
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, com.example.rickandmorty.model.Character> {
         val position = params.key ?: STARTING_PAGE_INDEX
 
         return try {
-            val response = api.searchCharacter(position, query)
+            val response = api.searchCharacter(position, query, status)
             val characters = response.results
 
             LoadResult.Page(

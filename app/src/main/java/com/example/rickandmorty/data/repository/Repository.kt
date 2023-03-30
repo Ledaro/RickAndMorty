@@ -12,19 +12,19 @@ import javax.inject.Singleton
 @Singleton
 class Repository @Inject constructor(
     private val api: Api,
-    private val database: CharactersDatabase
+    private val database: CharactersDatabase,
 ) {
 
     //API
-    fun getSearchResults(query: String) =
+    fun getSearchResults(query: String, status:String) =
         Pager(
             config = PagingConfig(
                 pageSize = 20,
                 maxSize = 100,
                 enablePlaceholders = false
             ),
-            pagingSourceFactory = { CharactersPagingSource(api, query) }
-        ).liveData
+            pagingSourceFactory = { CharactersPagingSource(api, query, status) }
+        ).flow
 
     //DATABASE
     fun getSavedCharacters() = database.characterDao().getAllCharacters()

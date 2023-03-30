@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.View
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rickandmorty.R
 import com.example.rickandmorty.adapters.FavouriteCharactersAdapter
@@ -16,7 +15,7 @@ class FavouritesFragment : Fragment(R.layout.fragment_favourites) {
 
     private var _binding: FragmentFavouritesBinding? = null
     private val binding get() = _binding!!
-    lateinit var favouriteCharactersAdapter: FavouriteCharactersAdapter
+    private lateinit var favouriteCharactersAdapter: FavouriteCharactersAdapter
     private val viewModel: FavouritesViewModel by viewModels()
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -25,9 +24,9 @@ class FavouritesFragment : Fragment(R.layout.fragment_favourites) {
 
         setupRecyclerView()
 
-        viewModel.getSavedCharacters().observe(viewLifecycleOwner, Observer { characters ->
-            favouriteCharactersAdapter.differ.submitList(characters)
-        })
+        viewModel.savedCharacters.observe(viewLifecycleOwner) {
+            favouriteCharactersAdapter.submitList(it)
+        }
     }
 
     private fun setupRecyclerView() {

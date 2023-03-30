@@ -3,12 +3,14 @@ package com.example.rickandmorty.ui.characters.characters
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rickandmorty.R
@@ -16,6 +18,7 @@ import com.example.rickandmorty.adapters.CharactersAdapter
 import com.example.rickandmorty.adapters.CharactersLoadStateAdapter
 import com.example.rickandmorty.databinding.FragmentCharactersBinding
 import com.example.rickandmorty.model.Character
+import com.example.rickandmorty.util.onQueryTextChanged
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -25,46 +28,22 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
     private var _binding: FragmentCharactersBinding? = null
     private val binding get() = _binding!!
     private val viewModel: CharactersViewModel by viewModels()
+    private lateinit var charactersAdapter: CharactersAdapter
 
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentCharactersBinding.bind(view)
+        charactersAdapter = CharactersAdapter(this)
 
-        val adapter = CharactersAdapter(this)
-
-        binding.apply {
-            charactersRecyclerView.setHasFixedSize(true)
-            charactersRecyclerView.adapter = adapter.withLoadStateHeaderAndFooter(
-                header = CharactersLoadStateAdapter { adapter.retry() },
-                footer = CharactersLoadStateAdapter { adapter.retry() },
-            )
-            charactersRecyclerView.layoutManager = LinearLayoutManager(requireContext())
-            charactersRecyclerView.itemAnimator = null
-            charactersButtonRetry.setOnClickListener {
-                adapter.retry()
-            }
-        }
+        setupRecyclerView()
 
         viewModel.characters.observe(viewLifecycleOwner) {
-            adapter.submitData(viewLifecycleOwner.lifecycle, it)
+            charactersAdapter.submitData(viewLifecycleOwner.lifecycle, it)
         }
 
-        adapter.addLoadStateListener { loadState ->
-            binding.apply {
-                charactersProgressBar.isVisible = loadState.source.refresh is LoadState.Loading
-                charactersRecyclerView.isVisible = loadState.source.refresh is LoadState.NotLoading
-                charactersButtonRetry.isVisible = loadState.source.refresh is LoadState.Error
-                charactersTextViewError.isVisible = loadState.source.refresh is LoadState.Error
-
-                if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && adapter.itemCount < 1) {
-                    charactersRecyclerView.isVisible = false
-                    charactersTextViewEmpty.isVisible = true
-                } else {
-                    charactersTextViewEmpty.isVisible = false
-                }
-
-            }
+        charactersAdapter.addLoadStateListener { loadState ->
+            handleLoadStateListener(loadState)
         }
 
         setHasOptionsMenu(true)
@@ -78,25 +57,21 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
         val searchItem = menu.findItem(R.id.action_search)
         val searchView = searchItem.actionView as SearchView
 
-        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                if (query != null) {
-                    binding.charactersRecyclerView.scrollToPosition(0)
-                    viewModel.searchCharacters(query)
-                    searchView.clearFocus()
-                }
-                return true
-            }
-
-            override fun onQueryTextChange(newText: String?): Boolean {
-                return true
-            }
-        })
+        searchView.onQueryTextChanged {
+            viewModel.searchQuery.value = it
+        }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        _binding = null
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_toggle_alive -> {
+                item.isChecked = !item.isChecked
+                true
+            }
+            else -> {
+                super.onOptionsItemSelected(item)
+            }
+        }
     }
 
     override fun onItemClick(character: Character) {
@@ -104,5 +79,41 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
         val action =
             CharactersFragmentDirections.actionCharactersFragmentToCharacterDetailFragment(character)
         findNavController().navigate(action)
+    }
+
+    private fun handleLoadStateListener(loadState: CombinedLoadStates) {
+        binding.apply {
+            charactersProgressBar.isVisible = loadState.source.refresh is LoadState.Loading
+            charactersRecyclerView.isVisible = loadState.source.refresh is LoadState.NotLoading
+            charactersButtonRetry.isVisible = loadState.source.refresh is LoadState.Error
+            charactersTextViewError.isVisible = loadState.source.refresh is LoadState.Error
+
+            if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && charactersAdapter.itemCount < 1) {
+                charactersRecyclerView.isVisible = false
+                charactersTextViewEmpty.isVisible = true
+            } else {
+                charactersTextViewEmpty.isVisible = false
+            }
+        }
+    }
+
+    private fun setupRecyclerView() {
+        binding.apply {
+            charactersRecyclerView.setHasFixedSize(true)
+            charactersRecyclerView.adapter = charactersAdapter.withLoadStateHeaderAndFooter(
+                header = CharactersLoadStateAdapter { charactersAdapter.retry() },
+                footer = CharactersLoadStateAdapter { charactersAdapter.retry() },
+            )
+            charactersRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+            charactersRecyclerView.itemAnimator = null
+            charactersButtonRetry.setOnClickListener {
+                charactersAdapter.retry()
+            }
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        _binding = null
     }
 }

@@ -56,7 +56,6 @@ class CharacterDetailFragment : Fragment(R.layout.fragment_detail) {
                     }
                 })
                 .into(detailImageView)
-
         }
     }
 }

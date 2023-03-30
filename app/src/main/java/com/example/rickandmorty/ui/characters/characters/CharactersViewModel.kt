@@ -6,12 +6,14 @@ import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.example.rickandmorty.util.Constants.Companion.DEFAULT_SEARCH_QUERY
-import com.example.rickandmorty.data.repository.ApiRepository
+import com.example.rickandmorty.data.repository.Repository
+import com.example.rickandmorty.model.Character
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CharactersViewModel @Inject constructor(private val apiRepository: ApiRepository) :
+class CharactersViewModel @Inject constructor(private val repository: Repository) :
     ViewModel() {
 
     private val currentQuery = MutableLiveData(DEFAULT_SEARCH_QUERY)
@@ -21,6 +23,10 @@ class CharactersViewModel @Inject constructor(private val apiRepository: ApiRepo
     }
 
     val characters = currentQuery.switchMap { queryString ->
-        apiRepository.getSearchResults(queryString).cachedIn(viewModelScope)
+        repository.getSearchResults(queryString).cachedIn(viewModelScope)
+    }
+
+    fun saveCharacter(character: Character) = viewModelScope.launch {
+        repository.insertCharacter(character)
     }
 }

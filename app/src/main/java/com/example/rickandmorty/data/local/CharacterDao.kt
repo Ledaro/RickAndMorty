@@ -1,17 +1,18 @@
 package com.example.rickandmorty.data.local
 
-import androidx.paging.PagingSource
+import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.example.rickandmorty.model.Character
 
 @Dao
 interface CharacterDao {
 
     @Query("SELECT * FROM characters_table")
-    fun getAllCharacters(): PagingSource<Int, com.example.rickandmorty.model.Character>
+    fun getAllCharacters(): LiveData<List<Character>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun insertCharacter(character: com.example.rickandmorty.model.Character)
+    suspend fun insertCharacter(character: Character)
 
     @Delete
-    suspend fun deleteCharacter(character: com.example.rickandmorty.model.Character)
+    suspend fun deleteCharacter(character: Character)
 }

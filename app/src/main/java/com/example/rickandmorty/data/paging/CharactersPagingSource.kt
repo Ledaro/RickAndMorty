@@ -1,9 +1,9 @@
-package com.example.rickandmorty.data
+package com.example.rickandmorty.data.paging
 
 import androidx.paging.PagingSource
 import androidx.paging.PagingState
-import com.example.rickandmorty.util.Constants.Companion.STARTING_PAGE_INDEX
 import com.example.rickandmorty.data.remote.Api
+import com.example.rickandmorty.util.Constants.Companion.STARTING_PAGE_INDEX
 import retrofit2.HttpException
 import java.io.IOException
 

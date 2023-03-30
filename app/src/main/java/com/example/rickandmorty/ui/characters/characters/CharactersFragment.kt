@@ -12,6 +12,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rickandmorty.R
+import com.example.rickandmorty.adapters.CharactersAdapter
+import com.example.rickandmorty.adapters.CharactersLoadStateAdapter
 import com.example.rickandmorty.databinding.FragmentCharactersBinding
 import com.example.rickandmorty.model.Character
 import dagger.hilt.android.AndroidEntryPoint
@@ -98,6 +100,7 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
     }
 
     override fun onItemClick(character: Character) {
+        viewModel.saveCharacter(character)
         val action =
             CharactersFragmentDirections.actionCharactersFragmentToCharacterDetailFragment(character)
         findNavController().navigate(action)

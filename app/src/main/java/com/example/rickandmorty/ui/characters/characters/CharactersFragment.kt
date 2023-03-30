@@ -25,7 +25,10 @@ class CharactersFragment : Fragment(R.layout.fragment_characters) {
 
         binding.apply {
             charactersRecyclerView.setHasFixedSize(true)
-            charactersRecyclerView.adapter = adapter
+            charactersRecyclerView.adapter = adapter.withLoadStateHeaderAndFooter(
+                header = CharactersLoadStateAdapter { adapter.retry() },
+                footer = CharactersLoadStateAdapter { adapter.retry() },
+            )
             charactersRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         }
 

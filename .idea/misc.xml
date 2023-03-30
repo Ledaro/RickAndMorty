@@ -5,6 +5,7 @@
       <map>
         <entry key="..\:/Users/fzela/AndroidStudioProjects/RickAndMorty/app/src/main/res/drawable/ic_rick.xml" value="0.1" />
         <entry key="..\:/Users/fzela/AndroidStudioProjects/RickAndMorty/app/src/main/res/layout/activity_main.xml" value="0.18" />
+        <entry key="..\:/Users/fzela/AndroidStudioProjects/RickAndMorty/app/src/main/res/layout/characters_load_state_footer.xml" value="0.1" />
         <entry key="..\:/Users/fzela/AndroidStudioProjects/RickAndMorty/app/src/main/res/layout/fragment_characters.xml" value="0.25" />
         <entry key="..\:/Users/fzela/AndroidStudioProjects/RickAndMorty/app/src/main/res/layout/fragment_detail.xml" value="0.1" />
         <entry key="..\:/Users/fzela/AndroidStudioProjects/RickAndMorty/app/src/main/res/layout/fragment_favourites.xml" value="0.1" />

@@ -5,7 +5,9 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.example.rickandmorty.R
 import com.example.rickandmorty.databinding.FragmentDetailBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class CharacterDetailFragment : Fragment(R.layout.fragment_detail) {
 
     private var _binding: FragmentDetailBinding? = null

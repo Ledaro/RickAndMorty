@@ -11,7 +11,7 @@ import com.example.rickandmorty.R
 import com.example.rickandmorty.data.models.Character
 import com.example.rickandmorty.databinding.ItemCharacterBinding
 
-class CharactersAdapter :
+class CharactersAdapter(private val listener: OnItemClickListener) :
     PagingDataAdapter<Character, CharactersAdapter.CharacterViewHolder>(CHARACTER_COMPARATOR) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CharacterViewHolder {
@@ -28,8 +28,20 @@ class CharactersAdapter :
         }
     }
 
-    class CharacterViewHolder(private val binding: ItemCharacterBinding) :
+    inner class CharacterViewHolder(private val binding: ItemCharacterBinding) :
         RecyclerView.ViewHolder(binding.root) {
+
+        init {
+            binding.root.setOnClickListener {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val item = getItem(position)
+                    if (item != null) {
+                        listener.onItemClick(item)
+                    }
+                }
+            }
+        }
 
         fun bind(character: Character) {
             binding.apply {
@@ -43,6 +55,10 @@ class CharactersAdapter :
                 itemCharacterTextView.text = character.name
             }
         }
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(character: Character)
     }
 
     companion object {

@@ -5,15 +5,20 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.View
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
+import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rickandmorty.R
+import com.example.rickandmorty.data.models.Character
 import com.example.rickandmorty.databinding.FragmentCharactersBinding
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class CharactersFragment : Fragment(R.layout.fragment_characters) {
+class CharactersFragment : Fragment(R.layout.fragment_characters),
+    CharactersAdapter.OnItemClickListener {
 
     private var _binding: FragmentCharactersBinding? = null
     private val binding get() = _binding!!
@@ -24,7 +29,7 @@ class CharactersFragment : Fragment(R.layout.fragment_characters) {
         super.onViewCreated(view, savedInstanceState)
         _binding = FragmentCharactersBinding.bind(view)
 
-        val adapter = CharactersAdapter()
+        val adapter = CharactersAdapter(this)
 
         binding.apply {
             charactersRecyclerView.setHasFixedSize(true)
@@ -33,10 +38,31 @@ class CharactersFragment : Fragment(R.layout.fragment_characters) {
                 footer = CharactersLoadStateAdapter { adapter.retry() },
             )
             charactersRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+            charactersRecyclerView.itemAnimator = null
+            charactersButtonRetry.setOnClickListener {
+                adapter.retry()
+            }
         }
 
         viewModel.characters.observe(viewLifecycleOwner) {
             adapter.submitData(viewLifecycleOwner.lifecycle, it)
+        }
+
+        adapter.addLoadStateListener { loadState ->
+            binding.apply {
+                charactersProgressBar.isVisible = loadState.source.refresh is LoadState.Loading
+                charactersRecyclerView.isVisible = loadState.source.refresh is LoadState.NotLoading
+                charactersButtonRetry.isVisible = loadState.source.refresh is LoadState.Error
+                charactersTextViewError.isVisible = loadState.source.refresh is LoadState.Error
+
+                if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && adapter.itemCount < 1) {
+                    charactersRecyclerView.isVisible = false
+                    charactersTextViewEmpty.isVisible = true
+                } else {
+                    charactersTextViewEmpty.isVisible = false
+                }
+
+            }
         }
 
         setHasOptionsMenu(true)
@@ -69,5 +95,11 @@ class CharactersFragment : Fragment(R.layout.fragment_characters) {
     override fun onDestroy() {
         super.onDestroy()
         _binding = null
+    }
+
+    override fun onItemClick(character: Character) {
+        val action =
+            CharactersFragmentDirections.actionCharactersFragmentToCharacterDetailFragment(character)
+        findNavController().navigate(action)
     }
 }

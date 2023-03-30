@@ -1,7 +1,7 @@
 package com.example.rickandmorty.di
 
-import com.example.rickandmorty.Constants.Companion.BASE_URL
-import com.example.rickandmorty.api.Api
+import com.example.rickandmorty.util.Constants.Companion.BASE_URL
+import com.example.rickandmorty.data.remote.Api
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -14,7 +14,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-object AppModule {
+object NetworkModule {
 
     @Provides
     @Singleton

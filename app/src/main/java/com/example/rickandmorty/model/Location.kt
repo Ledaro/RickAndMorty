@@ -1,4 +1,4 @@
-package com.example.rickandmorty.data.models
+package com.example.rickandmorty.model
 
 import android.os.Parcelable
 import kotlinx.parcelize.Parcelize

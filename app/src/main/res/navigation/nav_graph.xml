@@ -30,7 +30,7 @@
         tools:layout="@layout/fragment_detail">
         <argument
             android:name="character"
-            app:argType="com.example.rickandmorty.data.models.Character" />
+            app:argType="com.example.rickandmorty.model.Character" />
     </fragment>
 
 </navigation>

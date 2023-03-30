@@ -3,7 +3,7 @@ package com.example.rickandmorty.data.repository
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.liveData
-import com.example.rickandmorty.api.Api
+import com.example.rickandmorty.data.remote.Api
 import com.example.rickandmorty.data.CharactersPagingSource
 import javax.inject.Inject
 import javax.inject.Singleton

@@ -5,7 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
-import com.example.rickandmorty.Constants.Companion.DEFAULT_SEARCH_QUERY
+import com.example.rickandmorty.util.Constants.Companion.DEFAULT_SEARCH_QUERY
 import com.example.rickandmorty.data.repository.ApiRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject

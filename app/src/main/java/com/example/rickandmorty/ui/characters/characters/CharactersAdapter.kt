@@ -8,7 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.example.rickandmorty.R
-import com.example.rickandmorty.data.models.Character
+import com.example.rickandmorty.model.Character
 import com.example.rickandmorty.databinding.ItemCharacterBinding
 
 class CharactersAdapter(private val listener: OnItemClickListener) :

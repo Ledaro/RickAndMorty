@@ -13,6 +13,8 @@ interface Api {
 
     @GET("api/character")
     suspend fun searchCharacter(
-        @Query("name") query: String,
+        @Query("page") page: Int,
+        @Query("name") query: String
+
     ): CharactersResponse
 }

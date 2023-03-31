@@ -1,6 +1,5 @@
 package com.example.rickandmorty.data.local
 
-import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.example.rickandmorty.model.Character
 import kotlinx.coroutines.flow.Flow

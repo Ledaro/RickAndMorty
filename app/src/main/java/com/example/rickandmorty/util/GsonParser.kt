@@ -1,6 +1,5 @@
-package com.example.rickandmorty.data.util
+package com.example.rickandmorty.util
 
-import com.example.rickandmorty.util.JsonParser
 import com.google.gson.Gson
 import java.lang.reflect.Type
 

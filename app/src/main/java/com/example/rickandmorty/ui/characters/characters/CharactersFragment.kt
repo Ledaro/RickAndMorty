@@ -6,6 +6,8 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuHost
+import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -44,42 +46,39 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
             handleLoadStateListener(loadState)
         }
 
-        setHasOptionsMenu(true)
-    }
+        (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu_characters, menu)
 
-    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
-        super.onCreateOptionsMenu(menu, inflater)
-        inflater.inflate(R.menu.menu_characters, menu)
+                val searchItem = menu.findItem(R.id.action_search)
+                val searchView = searchItem.actionView as SearchView
 
-        val searchItem = menu.findItem(R.id.action_search)
-        val searchView = searchItem.actionView as SearchView
+                searchView.onQueryTextChanged {
+                    viewModel.searchQuery.value = it
+                }
+            }
 
-        searchView.onQueryTextChanged {
-            viewModel.searchQuery.value = it
-        }
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_toggle_alive -> {
-                item.isChecked = !item.isChecked
-                viewModel.characterStatus.value = CharacterStatus.ALIVE
-                true
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
+                return when (menuItem.itemId) {
+                    R.id.action_toggle_alive -> {
+                        menuItem.isChecked = !menuItem.isChecked
+                        viewModel.characterStatus.value = CharacterStatus.ALIVE
+                        true
+                    }
+                    R.id.action_toggle_dead -> {
+                        menuItem.isChecked = !menuItem.isChecked
+                        viewModel.characterStatus.value = CharacterStatus.DEAD
+                        true
+                    }
+                    R.id.action_toggle_all -> {
+                        menuItem.isChecked = !menuItem.isChecked
+                        viewModel.characterStatus.value = CharacterStatus.ALL
+                        true
+                    }
+                    else -> return false
+                }
             }
-            R.id.action_toggle_dead -> {
-                item.isChecked = !item.isChecked
-                viewModel.characterStatus.value = CharacterStatus.DEAD
-                true
-            }
-            R.id.action_toggle_all -> {
-                item.isChecked = !item.isChecked
-                viewModel.characterStatus.value = CharacterStatus.ALL
-                true
-            }
-            else -> {
-                super.onOptionsItemSelected(item)
-            }
-        }
+        }, viewLifecycleOwner)
     }
 
     override fun onItemClick(character: Character) {
@@ -94,13 +93,6 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
             charactersRecyclerView.isVisible = loadState.source.refresh is LoadState.NotLoading
             charactersButtonRetry.isVisible = loadState.source.refresh is LoadState.Error
             charactersTextViewError.isVisible = loadState.source.refresh is LoadState.Error
-
-            if (loadState.source.refresh is LoadState.NotLoading && loadState.append.endOfPaginationReached && charactersAdapter.itemCount < 1) {
-                charactersRecyclerView.isVisible = false
-                charactersTextViewEmpty.isVisible = true
-            } else {
-                charactersTextViewEmpty.isVisible = false
-            }
         }
     }
 

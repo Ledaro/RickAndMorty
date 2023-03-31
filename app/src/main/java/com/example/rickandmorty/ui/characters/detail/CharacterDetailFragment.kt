@@ -3,6 +3,7 @@ package com.example.rickandmorty.ui.characters.detail
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -41,8 +42,11 @@ class CharacterDetailFragment : Fragment(R.layout.fragment_detail) {
             }
         }
 
+
         binding.apply {
             val character = args.character
+
+            (requireActivity() as AppCompatActivity).supportActionBar?.title = character.name
 
             Glide.with(this@CharacterDetailFragment)
                 .load(character.image)

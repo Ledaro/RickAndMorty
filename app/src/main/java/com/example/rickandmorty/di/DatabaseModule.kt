@@ -4,7 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.example.rickandmorty.data.local.CharactersDatabase
 import com.example.rickandmorty.data.local.Converters
-import com.example.rickandmorty.data.util.GsonParser
+import com.example.rickandmorty.util.GsonParser
 import com.example.rickandmorty.util.Constants.Companion.CHARACTERS_DATABASE
 import com.google.gson.Gson
 import dagger.Module

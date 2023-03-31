@@ -28,7 +28,7 @@ class FavouriteCharactersAdapter(private val listener: OnItemClickListener) :
         holder.bind(currentItem)
     }
 
-    inner class FavouriteCharactersViewHolder(val binding: ItemCharacterBinding) :
+    inner class FavouriteCharactersViewHolder(private val binding: ItemCharacterBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         init {

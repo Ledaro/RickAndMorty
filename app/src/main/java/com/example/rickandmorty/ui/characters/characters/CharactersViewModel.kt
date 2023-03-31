@@ -1,14 +1,13 @@
 package com.example.rickandmorty.ui.characters.characters
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import androidx.paging.cachedIn
 import com.example.rickandmorty.data.repository.Repository
 import com.example.rickandmorty.util.Constants.Companion.STATUS_ALIVE
 import com.example.rickandmorty.util.Constants.Companion.STATUS_ALL
 import com.example.rickandmorty.util.Constants.Companion.STATUS_DEAD
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.combine
@@ -18,13 +17,15 @@ import javax.inject.Inject
 @HiltViewModel
 class CharactersViewModel @Inject constructor(
     private val repository: Repository,
+    private val state: SavedStateHandle
 ) : ViewModel() {
 
-    val searchQuery = MutableStateFlow("")
+    val searchQuery = state.getLiveData("search_query", "")
     val characterStatus = MutableStateFlow(CharacterStatus.ALL)
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val charactersFlow = combine(
-        searchQuery,
+        searchQuery.asFlow(),
         characterStatus
     ) { query, characterStatus ->
         Pair(query, characterStatus)

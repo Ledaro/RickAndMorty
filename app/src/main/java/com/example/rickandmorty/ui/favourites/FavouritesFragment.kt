@@ -2,6 +2,7 @@ package com.example.rickandmorty.ui.favourites
 
 import android.os.Bundle
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -30,6 +31,8 @@ class FavouritesFragment : Fragment(R.layout.fragment_favourites),
         favouriteCharactersAdapter = FavouriteCharactersAdapter(this)
 
         setupRecyclerView()
+
+        (requireActivity() as AppCompatActivity).supportActionBar?.setDisplayHomeAsUpEnabled(false)
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.favouritesCharactersEvent.collect { event ->
@@ -69,7 +72,7 @@ class FavouritesFragment : Fragment(R.layout.fragment_favourites),
 
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                     val character =
-                        favouriteCharactersAdapter.currentList[viewHolder.adapterPosition]
+                        favouriteCharactersAdapter.currentList[viewHolder.bindingAdapterPosition]
                     viewModel.swipeDeleteCharacter(character)
                 }
             }).attachToRecyclerView(favouritesRecyclerView)

@@ -9,19 +9,15 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.rickandmorty.R
-import com.example.rickandmorty.data.datastore.CharacterStatus
 import com.example.rickandmorty.databinding.FragmentCharactersBinding
 import com.example.rickandmorty.model.Character
 import com.example.rickandmorty.util.onQueryTextChanged
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CharactersFragment : Fragment(R.layout.fragment_characters),
@@ -61,37 +57,23 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
         searchView.onQueryTextChanged {
             viewModel.searchQuery.value = it
         }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            menu.findItem(R.id.action_toggle_alive).isChecked =
-                viewModel.preferenceFlow.first().statusAlive
-
-            menu.findItem(R.id.action_toggle_dead).isChecked =
-                viewModel.preferenceFlow.first().statusDead
-
-            menu.findItem(R.id.action_toggle_all).isChecked =
-                viewModel.preferenceFlow.first().statusAll
-        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             R.id.action_toggle_alive -> {
                 item.isChecked = !item.isChecked
-                viewModel.characterStatus.value = CharactersViewModel.CharacterStatus.ALIVE
-                viewModel.onStatusAliveToggle(item.isChecked)
+                viewModel.characterStatus.value = CharacterStatus.ALIVE
                 true
             }
             R.id.action_toggle_dead -> {
                 item.isChecked = !item.isChecked
-                viewModel.characterStatus.value = CharactersViewModel.CharacterStatus.DEAD
-                viewModel.onStatusDeadToggle(item.isChecked)
+                viewModel.characterStatus.value = CharacterStatus.DEAD
                 true
             }
             R.id.action_toggle_all -> {
                 item.isChecked = !item.isChecked
-                viewModel.characterStatus.value = CharactersViewModel.CharacterStatus.ALL
-                viewModel.onStatusAllToggle(item.isChecked)
+                viewModel.characterStatus.value = CharacterStatus.ALL
                 true
             }
             else -> {
@@ -101,7 +83,6 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
     }
 
     override fun onItemClick(character: Character) {
-        viewModel.saveCharacter(character)
         val action =
             CharactersFragmentDirections.actionCharactersFragmentToCharacterDetailFragment(character)
         findNavController().navigate(action)

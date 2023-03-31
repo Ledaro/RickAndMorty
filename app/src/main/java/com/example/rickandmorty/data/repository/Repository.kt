@@ -2,7 +2,6 @@ package com.example.rickandmorty.data.repository
 
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
-import androidx.paging.liveData
 import com.example.rickandmorty.data.local.CharactersDatabase
 import com.example.rickandmorty.data.paging.CharactersPagingSource
 import com.example.rickandmorty.data.remote.Api
@@ -15,7 +14,7 @@ class Repository @Inject constructor(
     private val database: CharactersDatabase,
 ) {
     //API
-    fun getSearchResults(query: String, status:String) =
+    fun getSearchResults(query: String, status: String) =
         Pager(
             config = PagingConfig(
                 pageSize = 20,

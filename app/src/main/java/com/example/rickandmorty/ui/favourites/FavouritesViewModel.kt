@@ -10,5 +10,5 @@ import javax.inject.Inject
 class FavouritesViewModel @Inject constructor(private val repository: Repository) :
     ViewModel() {
 
-    val savedCharacters = repository.getSavedCharacters()
+    val savedCharacters = repository.getSavedCharacters().asLiveData()
 }

@@ -1,7 +1,7 @@
 package com.example.rickandmorty.di
 
-import com.example.rickandmorty.util.Constants.Companion.BASE_URL
 import com.example.rickandmorty.data.remote.Api
+import com.example.rickandmorty.util.Constants.Companion.BASE_URL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

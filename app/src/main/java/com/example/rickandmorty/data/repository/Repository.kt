@@ -14,7 +14,6 @@ class Repository @Inject constructor(
     private val api: Api,
     private val database: CharactersDatabase,
 ) {
-
     //API
     fun getSearchResults(query: String, status:String) =
         Pager(

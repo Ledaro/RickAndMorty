@@ -7,12 +7,28 @@
         android:icon="@drawable/ic_search"
         android:title="search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
-        app:showAsAction="always|collapseActionView" />
+        app:showAsAction="ifRoom|collapseActionView" />
 
-    <item
-        android:id="@+id/action_toggle_alive"
-        android:checkable="true"
-        android:title="Alive"
-        app:showAsAction="never" />
+    <group
+        android:id="@+id/status_group"
+        android:checkableBehavior="single">
+        <item
+            android:id="@+id/action_toggle_alive"
+            android:checked="false"
+            android:title="Alive"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/action_toggle_dead"
+            android:checked="false"
+            android:title="Dead"
+            app:showAsAction="never" />
+
+        <item
+            android:id="@+id/action_toggle_all"
+            android:checked="false"
+            android:title="All"
+            app:showAsAction="never" />
+    </group>
 
 </menu>

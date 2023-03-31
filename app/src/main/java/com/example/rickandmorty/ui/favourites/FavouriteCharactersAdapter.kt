@@ -1,4 +1,4 @@
-package com.example.rickandmorty.adapters
+package com.example.rickandmorty.ui.favourites
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -11,7 +11,7 @@ import com.example.rickandmorty.R
 import com.example.rickandmorty.databinding.ItemCharacterBinding
 import com.example.rickandmorty.model.Character
 
-class FavouriteCharactersAdapter :
+class FavouriteCharactersAdapter(private val listener: OnItemClickListener) :
     ListAdapter<Character, FavouriteCharactersAdapter.FavouriteCharactersViewHolder>(DiffCallback()) {
 
     override fun onCreateViewHolder(
@@ -31,6 +31,18 @@ class FavouriteCharactersAdapter :
     inner class FavouriteCharactersViewHolder(val binding: ItemCharacterBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
+        init {
+            binding.root.setOnClickListener {
+                val position = bindingAdapterPosition
+                if (position != RecyclerView.NO_POSITION) {
+                    val item = getItem(position)
+                    if (item != null) {
+                        listener.onItemClick(item)
+                    }
+                }
+            }
+        }
+
         fun bind(character: Character) {
             binding.apply {
                 Glide.with(itemView)
@@ -43,6 +55,10 @@ class FavouriteCharactersAdapter :
                 itemCharacterTextView.text = character.name
             }
         }
+    }
+
+    interface OnItemClickListener {
+        fun onItemClick(character: Character)
     }
 
     class DiffCallback : DiffUtil.ItemCallback<Character>() {

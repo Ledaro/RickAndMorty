@@ -7,5 +7,8 @@ class Constants {
         const val STARTING_PAGE_INDEX = 1
         const val CHARACTERS_DATABASE = "characters_database"
         const val CHARACTERS_TABLE = "characters_table"
+        const val STATUS_ALIVE = "alive"
+        const val STATUS_DEAD = "dead"
+        const val STATUS_ALL = ""
     }
 }

@@ -51,6 +51,7 @@ class CharacterDetailFragment : Fragment(R.layout.fragment_detail) {
             Glide.with(this@CharacterDetailFragment)
                 .load(character.image)
                 .error(R.drawable.ic_error)
+                .circleCrop()
                 .listener(object : RequestListener<Drawable> {
                     override fun onLoadFailed(
                         e: GlideException?,
@@ -70,15 +71,24 @@ class CharacterDetailFragment : Fragment(R.layout.fragment_detail) {
                         isFirstResource: Boolean
                     ): Boolean {
                         detailProgressBar.isVisible = false
-                        detailSaveCharacterButton.isVisible = true
+/*                        detailSaveCharacterButton.isVisible = true*/
                         return false
                     }
                 })
-                .into(detailImageView)
+                .into(detailCharacterImageView)
 
-            detailSaveCharacterButton.setOnClickListener {
+            detailCharacterIdTextView.text = character.id.toString()
+            detailCharacterNameTextView.text = character.name
+            detailCharacterSpeciesTextView.text = character.species
+            detailEpisodesNumberTextView.text = character.episode.size.toString()
+            detailGenderTextView.text = character.gender
+            detailLocationTextView.text = character.location.name
+            detailOriginTextView.text = character.origin.name
+            detailStatusTextView.text = character.status
+
+/*            detailSaveCharacterButton.setOnClickListener {
                 viewModel.saveCharacter(character)
-            }
+            }*/
         }
     }
 }

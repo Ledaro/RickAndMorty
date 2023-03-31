@@ -10,5 +10,6 @@ class Constants {
         const val STATUS_ALIVE = "alive"
         const val STATUS_DEAD = "dead"
         const val STATUS_ALL = ""
+        const val GRID_SPAN_COUNT = 2
     }
 }

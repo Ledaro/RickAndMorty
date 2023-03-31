@@ -22,6 +22,111 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <com.google.android.material.card.MaterialCardView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:strokeColor="@color/text_blue"
+            app:strokeWidth="5dp"
+            android:id="@+id/detail_character_card_view_first">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ImageView
+                    android:id="@+id/detail_character_image_view"
+                    android:layout_width="220dp"
+                    android:layout_height="220dp"
+                    android:src="@mipmap/ic_launcher"
+                    app:layout_constraintBottom_toTopOf="@+id/detail_gender_text_view"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/detail_status_text_view"
+                    app:layout_constraintVertical_bias="0.3" />
+
+                <TextView
+                    android:id="@+id/detail_character_name_text_view"
+                    style="@style/TextColor"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="24dp"
+                    android:maxLines="2"
+                    android:textAlignment="center"
+                    android:textSize="20sp"
+                    android:textStyle="bold"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/detail_character_image_view"
+                    tools:text="Abradolf Lincler" />
+
+                <TextView
+                    android:id="@+id/detail_character_species_text_view"
+                    style="@style/TextColor"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginEnd="24dp"
+                    android:textAlignment="center"
+                    android:textAllCaps="true"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/detail_character_name_text_view"
+                    tools:text="HUMAN" />
+
+                <TextView
+                    android:id="@+id/detail_gender_text_view"
+                    style="@style/TextColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.07"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.66"
+                    tools:text="Genderless" />
+
+                <TextView
+                    android:id="@+id/detail_status_text_view"
+                    style="@style/TextColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/detail_character_id_text_view"
+                    app:layout_constraintHorizontal_bias="0.164"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.064"
+                    tools:text="Unknown" />
+
+                <TextView
+                    android:id="@+id/detail_character_id_text_view"
+                    style="@style/TextColor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="24sp"
+                    android:textStyle="bold"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.89"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.064"
+                    tools:text="7" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -45,7 +150,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.65"
                 app:layout_constraintStart_toEndOf="@+id/details_origin_title_text_view"
-                app:layout_constraintTop_toBottomOf="@+id/detail_gender_text_view"
+                app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.23000002" />
 
             <TextView
@@ -61,20 +166,6 @@
                 app:layout_constraintStart_toEndOf="@+id/detail_episodes_text_view"
                 app:layout_constraintTop_toTopOf="@+id/detail_episodes_text_view"
                 tools:text="42" />
-
-            <TextView
-                android:id="@+id/detail_gender_text_view"
-                style="@style/TextColor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.07"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.66"
-                tools:text="Genderless" />
 
             <TextView
                 android:id="@+id/details_origin_title_text_view"
@@ -133,81 +224,6 @@
                 app:layout_constraintTop_toBottomOf="@+id/detail_location_title_text_view"
                 tools:text="Testicle Monster Dimension" />
 
-            <TextView
-                android:id="@+id/detail_status_text_view"
-                style="@style/TextColor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/detail_character_id_text_view"
-                app:layout_constraintHorizontal_bias="0.164"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.064"
-                tools:text="Unknown" />
-
-            <TextView
-                android:id="@+id/detail_character_id_text_view"
-                style="@style/TextColor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.89"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.064"
-                tools:text="7" />
-
-            <ImageView
-                android:id="@+id/detail_character_image_view"
-                android:layout_width="220dp"
-                android:layout_height="220dp"
-                android:src="@mipmap/ic_launcher"
-                app:layout_constraintBottom_toTopOf="@+id/detail_gender_text_view"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/detail_status_text_view"
-                app:layout_constraintVertical_bias="0.3" />
-
-            <TextView
-                android:id="@+id/detail_character_name_text_view"
-                style="@style/TextColor"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="24dp"
-                android:maxLines="2"
-                android:textAlignment="center"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/detail_character_image_view"
-                tools:text="Abradolf Lincler" />
-
-            <TextView
-                android:id="@+id/detail_character_species_text_view"
-                style="@style/TextColor"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="4dp"
-                android:layout_marginEnd="24dp"
-                android:textAlignment="center"
-                android:textAllCaps="true"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/detail_character_name_text_view"
-                tools:text="HUMAN" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

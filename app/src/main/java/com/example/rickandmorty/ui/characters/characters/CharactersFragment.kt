@@ -15,11 +15,13 @@ import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rickandmorty.R
 import com.example.rickandmorty.databinding.FragmentCharactersBinding
 import com.example.rickandmorty.model.Character
+import com.example.rickandmorty.util.Constants.Companion.GRID_SPAN_COUNT
 import com.example.rickandmorty.util.onQueryTextChanged
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -134,7 +136,7 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
                 header = CharactersLoadStateAdapter { charactersAdapter.retry() },
                 footer = CharactersLoadStateAdapter { charactersAdapter.retry() },
             )
-            charactersRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+            charactersRecyclerView.layoutManager = GridLayoutManager(requireContext(), GRID_SPAN_COUNT)
             charactersRecyclerView.itemAnimator = null
             charactersRecyclerView.addItemDecoration(
                 DividerItemDecoration(

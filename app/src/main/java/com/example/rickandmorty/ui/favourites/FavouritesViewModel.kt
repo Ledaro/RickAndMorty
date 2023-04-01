@@ -22,7 +22,11 @@ class FavouritesViewModel @Inject constructor(private val repository: Repository
 
     fun swipeDeleteCharacter(character: Character) = viewModelScope.launch {
         repository.deleteCharacter(character)
-        favouritesFavouritesCharactersEventChannel.send(FavouritesCharactersEvent.ShowUndoDeleteCharacterMessage(character))
+        favouritesFavouritesCharactersEventChannel.send(
+            FavouritesCharactersEvent.ShowUndoDeleteCharacterMessage(
+                character
+            )
+        )
     }
 
     fun undoSwipeDeleteCharacter(character: Character) = viewModelScope.launch {
@@ -30,6 +34,7 @@ class FavouritesViewModel @Inject constructor(private val repository: Repository
     }
 
     sealed class FavouritesCharactersEvent {
-        data class ShowUndoDeleteCharacterMessage(val character: Character) : FavouritesCharactersEvent()
+        data class ShowUndoDeleteCharacterMessage(val character: Character) :
+            FavouritesCharactersEvent()
     }
 }

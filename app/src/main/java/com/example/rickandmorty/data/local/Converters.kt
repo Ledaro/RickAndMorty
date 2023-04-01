@@ -2,9 +2,9 @@ package com.example.rickandmorty.data.local
 
 import androidx.room.ProvidedTypeConverter
 import androidx.room.TypeConverter
-import com.example.rickandmorty.util.JsonParser
 import com.example.rickandmorty.model.Location
 import com.example.rickandmorty.model.Origin
+import com.example.rickandmorty.util.JsonParser
 import com.google.gson.reflect.TypeToken
 
 @ProvidedTypeConverter

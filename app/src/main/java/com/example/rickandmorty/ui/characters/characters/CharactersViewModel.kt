@@ -17,7 +17,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CharactersViewModel @Inject constructor(
     private val repository: Repository,
-    private val state: SavedStateHandle
+    state: SavedStateHandle
 ) : ViewModel() {
 
     val searchQuery = state.getLiveData("search_query", "")

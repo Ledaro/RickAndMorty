@@ -26,8 +26,18 @@ class CharacterDetailViewModel @Inject constructor(private val repository: Repos
         )
     }
 
+    fun deleteCharacter(character: Character) = viewModelScope.launch {
+        repository.deleteCharacter(character)
+        characterDetailEventChannel.send(
+            CharacterDetailEvent.ShowDeleteCharacterMessage(character)
+        )
+
+    }
+
     sealed class CharacterDetailEvent {
         data class ShowSaveCharacterMessage(val character: Character) :
             CharacterDetailEvent()
+
+        data class ShowDeleteCharacterMessage(val character: Character) : CharacterDetailEvent()
     }
 }

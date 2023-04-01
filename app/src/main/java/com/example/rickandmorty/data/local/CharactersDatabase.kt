@@ -7,7 +7,7 @@ import com.example.rickandmorty.model.Character
 
 @Database(entities = [Character::class], version = 1)
 @TypeConverters(Converters::class)
-abstract class CharactersDatabase: RoomDatabase() {
+abstract class CharactersDatabase : RoomDatabase() {
 
     abstract fun characterDao(): CharacterDao
 }

@@ -17,7 +17,6 @@ import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rickandmorty.R
 import com.example.rickandmorty.databinding.FragmentCharactersBinding
@@ -72,7 +71,7 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
                 searchView.onQueryTextChanged {
                     if (it.isNotEmpty()) {
                         binding.charactersRecyclerView.scrollToPosition(0)
-                       viewModel.searchQuery.value = it
+                        viewModel.searchQuery.value = it
                     }
                 }
 
@@ -83,11 +82,11 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
                     }
 
                     override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-                        if (pendingQuery.isNullOrEmpty()){
+/*                        if (pendingQuery.isNullOrEmpty()){
                             binding.charactersRecyclerView.scrollToPosition(0)
                             viewModel.searchQuery.value = null
                             viewModel.characterStatus.value = CharacterStatus.ALL
-                        }
+                        }*/
                         return true
                     }
                 })
@@ -141,7 +140,8 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
                 header = CharactersLoadStateAdapter { charactersAdapter.retry() },
                 footer = CharactersLoadStateAdapter { charactersAdapter.retry() },
             )
-            charactersRecyclerView.layoutManager = GridLayoutManager(requireContext(), GRID_SPAN_COUNT)
+            charactersRecyclerView.layoutManager =
+                GridLayoutManager(requireContext(), GRID_SPAN_COUNT)
             charactersRecyclerView.itemAnimator = null
             charactersRecyclerView.addItemDecoration(
                 DividerItemDecoration(

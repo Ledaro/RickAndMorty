@@ -35,13 +35,24 @@ class CharacterDetailFragment : Fragment(R.layout.fragment_detail) {
             viewModel.characterDetailEvent.collect { event ->
                 when (event) {
                     is CharacterDetailViewModel.CharacterDetailEvent.ShowSaveCharacterMessage -> {
-                        Snackbar.make(requireView(), "Character saved successfully", Snackbar.LENGTH_LONG)
+                        Snackbar.make(
+                            requireView(),
+                            "Character saved successfully",
+                            Snackbar.LENGTH_SHORT
+                        )
+                            .show()
+                    }
+                    is CharacterDetailViewModel.CharacterDetailEvent.ShowDeleteCharacterMessage -> {
+                        Snackbar.make(
+                            requireView(),
+                            "Character deleted successfully",
+                            Snackbar.LENGTH_SHORT
+                        )
                             .show()
                     }
                 }
             }
         }
-
 
         binding.apply {
             val character = args.character
@@ -71,7 +82,6 @@ class CharacterDetailFragment : Fragment(R.layout.fragment_detail) {
                         isFirstResource: Boolean
                     ): Boolean {
                         detailProgressBar.isVisible = false
-/*                        detailSaveCharacterButton.isVisible = true*/
                         return false
                     }
                 })
@@ -86,9 +96,13 @@ class CharacterDetailFragment : Fragment(R.layout.fragment_detail) {
             detailOriginTextView.text = character.origin.name
             detailStatusTextView.text = character.status
 
-/*            detailSaveCharacterButton.setOnClickListener {
+            detailSaveCharacterButton.setOnClickListener {
                 viewModel.saveCharacter(character)
-            }*/
+            }
+
+            detailDeleteCharacterButton.setOnClickListener {
+                viewModel.deleteCharacter(character)
+            }
         }
     }
 }

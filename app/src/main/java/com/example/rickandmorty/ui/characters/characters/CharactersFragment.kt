@@ -5,6 +5,7 @@ import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
@@ -53,6 +54,8 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
             handleLoadStateListener(loadState)
         }
 
+        val toolbar = binding.charactersToolbar
+        (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
         (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
                 menuInflater.inflate(R.menu.menu_characters, menu)
@@ -69,7 +72,7 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
                 searchView.onQueryTextChanged {
                     if (it.isNotEmpty()) {
                         binding.charactersRecyclerView.scrollToPosition(0)
-                        viewModel.searchQuery.value = it
+                       viewModel.searchQuery.value = it
                     }
                 }
 
@@ -80,9 +83,11 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
                     }
 
                     override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-                        binding.charactersRecyclerView.scrollToPosition(0)
-                        viewModel.searchQuery.value = ""
-                        viewModel.characterStatus.value = CharacterStatus.ALL
+                        if (pendingQuery.isNullOrEmpty()){
+                            binding.charactersRecyclerView.scrollToPosition(0)
+                            viewModel.searchQuery.value = null
+                            viewModel.characterStatus.value = CharacterStatus.ALL
+                        }
                         return true
                     }
                 })

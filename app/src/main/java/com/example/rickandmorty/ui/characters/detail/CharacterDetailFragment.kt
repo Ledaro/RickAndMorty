@@ -51,7 +51,7 @@ class CharacterDetailFragment : Fragment(R.layout.fragment_detail) {
             Glide.with(this@CharacterDetailFragment)
                 .load(character.image)
                 .error(R.drawable.ic_error)
-                .circleCrop()
+                .centerCrop()
                 .listener(object : RequestListener<Drawable> {
                     override fun onLoadFailed(
                         e: GlideException?,

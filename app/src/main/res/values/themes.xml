@@ -1,6 +1,6 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.RickAndMorty" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.RickAndMorty" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/text_blue</item>
         <item name="colorPrimaryVariant">@color/purple_700</item>
@@ -11,11 +11,25 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
+
         <!-- Customize your theme here. -->
+        <item name="android:actionOverflowButtonStyle">@style/MyOverflowButtonStyle</item>
     </style>
 
     <style name="TextColor">
         <item name="android:textColor">@color/text_blue</item>
+    </style>
+
+    <style name="ShapeAppearance.MyApp.MediumComponent.Cut" parent="ShapeAppearance.MaterialComponents.SmallComponent">
+        <item name="cornerFamilyTopLeft">cut</item>
+        <item name="cornerFamilyBottomRight">cut</item>
+        <item name="cornerSizeTopLeft">50dp</item>
+        <item name="cornerSizeBottomRight">50dp</item>
+    </style>
+
+    <style name="MyOverflowButtonStyle" parent="Widget.AppCompat.Light.ActionButton.Overflow">
+        <item name="android:tint">@color/text_blue</item>
+        <item name="android:alpha">1.0</item>
     </style>
 
 </resources>

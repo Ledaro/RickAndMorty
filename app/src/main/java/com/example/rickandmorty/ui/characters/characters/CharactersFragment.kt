@@ -12,6 +12,7 @@ import androidx.core.view.MenuProvider
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
@@ -19,11 +20,14 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rickandmorty.R
+import com.example.rickandmorty.data.datastore.CharacterStatus
 import com.example.rickandmorty.databinding.FragmentCharactersBinding
 import com.example.rickandmorty.model.Character
 import com.example.rickandmorty.util.Constants.Companion.GRID_SPAN_COUNT
 import com.example.rickandmorty.util.onQueryTextChanged
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class CharactersFragment : Fragment(R.layout.fragment_characters),
@@ -31,6 +35,8 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
 
     private var _binding: FragmentCharactersBinding? = null
     private val binding get() = _binding!!
+    private var isAliveChecked = false
+    private var isDeadChecked = false
     private val viewModel: CharactersViewModel by viewModels()
     private lateinit var charactersAdapter: CharactersAdapter
     private lateinit var searchView: SearchView
@@ -75,47 +81,70 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
                     }
                 }
 
-                val menuItem = menu.findItem(R.id.action_search)
-                menuItem.setOnActionExpandListener(object : MenuItem.OnActionExpandListener {
-                    override fun onMenuItemActionExpand(item: MenuItem?): Boolean {
-                        return true
+                viewLifecycleOwner.lifecycleScope.launch {
+                    viewModel.preferencesFlow.first().let { preferences ->
+                        menu.findItem(R.id.action_toggle_alive).isChecked = preferences.statusAlive
+                        isAliveChecked = preferences.statusAlive
+                        menu.findItem(R.id.action_toggle_dead).isChecked = preferences.statusDead
+                        isDeadChecked = preferences.statusDead
                     }
-
-                    override fun onMenuItemActionCollapse(item: MenuItem?): Boolean {
-/*                        if (pendingQuery.isNullOrEmpty()){
-                            binding.charactersRecyclerView.scrollToPosition(0)
-                            viewModel.searchQuery.value = null
-                            viewModel.characterStatus.value = CharacterStatus.ALL
-                        }*/
-                        return true
-                    }
-                })
+                }
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
                 return when (menuItem.itemId) {
                     R.id.action_toggle_alive -> {
-                        menuItem.isChecked = !menuItem.isChecked
-                        viewModel.characterStatus.value = CharacterStatus.ALIVE
-                        binding.charactersRecyclerView.scrollToPosition(0)
-                        true
+                        handleAliveToggle(menuItem)
                     }
                     R.id.action_toggle_dead -> {
-                        menuItem.isChecked = !menuItem.isChecked
-                        viewModel.characterStatus.value = CharacterStatus.DEAD
-                        binding.charactersRecyclerView.scrollToPosition(0)
-                        true
-                    }
-                    R.id.action_toggle_all -> {
-                        menuItem.isChecked = !menuItem.isChecked
-                        viewModel.characterStatus.value = CharacterStatus.ALL
-                        binding.charactersRecyclerView.scrollToPosition(0)
-                        true
+                        handleDeadToggle(menuItem)
                     }
                     else -> return false
                 }
             }
         }, viewLifecycleOwner)
+    }
+
+    private fun handleAliveToggle(menuItem: MenuItem): Boolean {
+        menuItem.isChecked = !menuItem.isChecked
+        isAliveChecked = menuItem.isChecked
+        viewModel.onAliveToggle(menuItem.isChecked)
+        if (menuItem.isChecked) {
+            if (isDeadChecked) {
+                viewModel.characterStatus.value = CharacterStatus.ALL
+            } else {
+                viewModel.characterStatus.value = CharacterStatus.ALIVE
+            }
+            binding.charactersRecyclerView.scrollToPosition(0)
+        } else if (!isDeadChecked) {
+            viewModel.characterStatus.value = CharacterStatus.ALL
+        } else {
+            viewModel.characterStatus.value = CharacterStatus.DEAD
+            binding.charactersRecyclerView.scrollToPosition(0)
+        }
+        return true
+
+    }
+
+    private fun handleDeadToggle(menuItem: MenuItem): Boolean {
+        menuItem.isChecked = !menuItem.isChecked
+        isDeadChecked = menuItem.isChecked
+        viewModel.onDeadToggle(menuItem.isChecked)
+        if (menuItem.isChecked) {
+            if (isAliveChecked) {
+                viewModel.characterStatus.value = CharacterStatus.ALL
+            } else {
+                viewModel.characterStatus.value = CharacterStatus.DEAD
+            }
+            binding.charactersRecyclerView.scrollToPosition(0)
+        } else if (!isAliveChecked) {
+            viewModel.characterStatus.value = CharacterStatus.ALL
+        } else {
+            viewModel.characterStatus.value = CharacterStatus.ALIVE
+            binding.charactersRecyclerView.scrollToPosition(0)
+        }
+        return true
+
     }
 
     override fun onItemClick(character: Character) {

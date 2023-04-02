@@ -9,26 +9,16 @@
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
 
-    <group
-        android:id="@+id/status_group"
-        android:checkableBehavior="single">
-        <item
-            android:id="@+id/action_toggle_alive"
-            android:checked="false"
-            android:title="@string/characters_menu_item_action_toggle_alive"
-            app:showAsAction="never" />
+    <item
+        android:id="@+id/action_toggle_alive"
+        android:checkable="true"
+        android:title="@string/characters_menu_item_action_toggle_alive"
+        app:showAsAction="never" />
 
-        <item
-            android:id="@+id/action_toggle_dead"
-            android:checked="false"
-            android:title="@string/characters_menu_item_action_toggle_dead"
-            app:showAsAction="never" />
-
-        <item
-            android:id="@+id/action_toggle_all"
-            android:checked="false"
-            android:title="@string/characters_menu_item_action_toggle_all"
-            app:showAsAction="never" />
-    </group>
+    <item
+        android:id="@+id/action_toggle_dead"
+        android:checkable="true"
+        android:title="@string/characters_menu_item_action_toggle_dead"
+        app:showAsAction="never" />
 
 </menu>

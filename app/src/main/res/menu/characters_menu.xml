@@ -5,7 +5,7 @@
     <item
         android:id="@+id/action_search"
         android:icon="@drawable/ic_search"
-        android:title="search"
+        android:title="@string/characters_menu_item_action_search"
         app:actionViewClass="androidx.appcompat.widget.SearchView"
         app:showAsAction="ifRoom|collapseActionView" />
 
@@ -15,19 +15,19 @@
         <item
             android:id="@+id/action_toggle_alive"
             android:checked="false"
-            android:title="Alive"
+            android:title="@string/characters_menu_item_action_toggle_alive"
             app:showAsAction="never" />
 
         <item
             android:id="@+id/action_toggle_dead"
             android:checked="false"
-            android:title="Dead"
+            android:title="@string/characters_menu_item_action_toggle_dead"
             app:showAsAction="never" />
 
         <item
             android:id="@+id/action_toggle_all"
             android:checked="false"
-            android:title="All"
+            android:title="@string/characters_menu_item_action_toggle_all"
             app:showAsAction="never" />
     </group>
 

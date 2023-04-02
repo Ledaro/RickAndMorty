@@ -13,13 +13,15 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
 
         <!-- Customize your theme here. -->
-        <item name="android:actionOverflowButtonStyle">@style/MyOverflowButtonStyle</item>
+        <item name="android:actionOverflowButtonStyle">@style/ActionOverflowBlueButtonStyle</item>
     </style>
 
-    <style name="TextColor">
+    <!-- Blue text view style-->
+    <style name="TextColorBlue">
         <item name="android:textColor">@color/text_blue</item>
     </style>
 
+    <!-- Character detail card view shape style-->
     <style name="ShapeAppearance.MyApp.MediumComponent.Cut" parent="ShapeAppearance.MaterialComponents.SmallComponent">
         <item name="cornerFamilyTopLeft">cut</item>
         <item name="cornerFamilyBottomRight">cut</item>
@@ -27,7 +29,8 @@
         <item name="cornerSizeBottomRight">50dp</item>
     </style>
 
-    <style name="MyOverflowButtonStyle" parent="Widget.AppCompat.Light.ActionButton.Overflow">
+    <!-- Action overflow menu blue style -->
+    <style name="ActionOverflowBlueButtonStyle" parent="Widget.AppCompat.Light.ActionButton.Overflow">
         <item name="android:tint">@color/text_blue</item>
         <item name="android:alpha">1.0</item>
     </style>

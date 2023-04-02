@@ -22,9 +22,9 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:title="Characters"
-            app:titleTextColor="@color/text_blue"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:title="@string/characters_app_bar_title"
+            app:titleTextColor="@color/text_blue" />
 
     </com.google.android.material.appbar.AppBarLayout>
 
@@ -51,7 +51,7 @@
         android:id="@+id/characters_text_view_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Results could not be loaded"
+        android:text="@string/characters_text_view_error"
         android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@id/characters_button_retry"
         app:layout_constraintEnd_toEndOf="parent"
@@ -62,7 +62,7 @@
         android:id="@+id/characters_button_retry"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Retry"
+        android:text="@string/characters_button_retry_text"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

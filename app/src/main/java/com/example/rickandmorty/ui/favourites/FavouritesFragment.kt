@@ -42,10 +42,10 @@ class FavouritesFragment : Fragment(R.layout.fragment_favourites),
                     is FavouritesViewModel.FavouritesCharactersEvent.ShowUndoDeleteCharacterMessage -> {
                         Snackbar.make(
                             requireView(),
-                            "Character deleted successfully",
+                            getString(R.string.favourites_snackbar_delete_character_text),
                             Snackbar.LENGTH_SHORT
                         )
-                            .setAction("UNDO") {
+                            .setAction(getString(R.string.favourites_snackbar_action_undo_text)) {
                                 viewModel.undoSwipeDeleteCharacter(event.character)
                             }.show()
                     }

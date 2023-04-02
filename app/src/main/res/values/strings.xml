@@ -1,10 +1,36 @@
 <resources>
     <string name="app_name">RickAndMorty</string>
 
-    <!-- DetailFragment Strings -->
-    <string name="title_episodes">Episodes</string>
-    <string name="title_origin">Origin</string>
-    <string name="title_location">Location</string>
-    <string name="title_reset">Reset</string>
+    <!--BottomNavigationMenu-->
+    <string name="bottom_navigation_menu_item_characters">Characters</string>
+    <string name="bottom_navigation_menu_item_favourites">Favourites</string>
+
+    <!--CharactersFragmentAppBarMenu-->
+    <string name="characters_menu_item_action_search">Search</string>
+    <string name="characters_menu_item_action_toggle_alive">Alive</string>
+    <string name="characters_menu_item_action_toggle_dead">Dead</string>
+    <string name="characters_menu_item_action_toggle_all">All</string>
+
+    <!-- CharactersFragment -->
+    <string name="characters_app_bar_title">Rick and Morty</string>
+    <string name="characters_text_view_error">Results could not be loaded</string>
+    <string name="characters_button_retry_text">Retry</string>
+
+    <!-- DetailFragment -->
+    <string name="detail_episodes_text_view">Episodes</string>
+    <string name="detail_origin_text_view">Origin</string>
+    <string name="detail_location_text_view">Location</string>
+    <string name="detail_location_button_save">Save</string>
+    <string name="detail_location_button_delete">Delete</string>
+    <string name="detail_snackbar_save_character_text">Character saved successfully</string>
+    <string name="detail_snackbar_delete_character_text">Character deleted successfully</string>
+
+    <!-- FavouritesFragment -->
+    <string name="favourites_snackbar_delete_character_text">Character deleted successfully</string>
+    <string name="favourites_snackbar_action_undo_text">Undo</string>
+
+    <!-- ItemCharacterLoadStateFooter -->
+    <string name="item_character_load_state_footer_text_view_error">Results could not be loaded</string>
+    <string name="item_character_load_state_footer_button_retry">Retry</string>
 
 </resources>

@@ -4,10 +4,10 @@
         android:id="@+id/charactersFragment"
         android:enabled="true"
         android:icon="@drawable/ic_rick"
-        android:title="Characters" />
+        android:title="@string/bottom_navigation_menu_item_characters" />
     <item
         android:id="@+id/favouritesFragment"
         android:enabled="true"
         android:icon="@drawable/ic_favourites"
-        android:title="Favourites" />
+        android:title="@string/bottom_navigation_menu_item_favourites" />
 </menu>

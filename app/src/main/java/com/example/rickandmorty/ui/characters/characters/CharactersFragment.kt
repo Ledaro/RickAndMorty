@@ -57,7 +57,7 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
         (requireActivity() as AppCompatActivity).setSupportActionBar(toolbar)
         (requireActivity() as MenuHost).addMenuProvider(object : MenuProvider {
             override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
-                menuInflater.inflate(R.menu.menu_characters, menu)
+                menuInflater.inflate(R.menu.characters_menu, menu)
 
                 val searchItem = menu.findItem(R.id.action_search)
                 searchView = searchItem.actionView as SearchView

@@ -71,10 +71,6 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
                     searchView.setQuery(pendingQuery, false)
                 }
 
-                if (pendingQuery!!.length <= 1) {
-                    viewModel.searchQuery.value = ""
-                }
-
                 searchView.onQueryTextChanged {
                     if (it.isNotEmpty()) {
                         binding.charactersRecyclerView.scrollToPosition(0)

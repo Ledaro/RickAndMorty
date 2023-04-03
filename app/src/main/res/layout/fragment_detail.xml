@@ -130,10 +130,11 @@
         android:background="@color/black"
         app:layout_constraintBottom_toTopOf="@+id/detail_save_character_button"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="5dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/detail_character_card_view_first"
         app:strokeColor="@color/text_blue"
-        app:strokeWidth="5dp">
+        app:strokeWidth="3dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

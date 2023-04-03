@@ -111,15 +111,18 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
         viewModel.onAliveToggle(menuItem.isChecked)
         if (menuItem.isChecked) {
             if (isDeadChecked) {
-                viewModel.characterStatus.value = CharacterStatus.ALL
+                viewModel.onCharacterStatusUpdate(CharacterStatus.ALL)
+                binding.charactersRecyclerView.scrollToPosition(0)
             } else {
-                viewModel.characterStatus.value = CharacterStatus.ALIVE
+                viewModel.onCharacterStatusUpdate(CharacterStatus.ALIVE)
+                binding.charactersRecyclerView.scrollToPosition(0)
             }
             binding.charactersRecyclerView.scrollToPosition(0)
         } else if (!isDeadChecked) {
-            viewModel.characterStatus.value = CharacterStatus.ALL
+            viewModel.onCharacterStatusUpdate(CharacterStatus.ALL)
+            binding.charactersRecyclerView.scrollToPosition(0)
         } else {
-            viewModel.characterStatus.value = CharacterStatus.DEAD
+            viewModel.onCharacterStatusUpdate(CharacterStatus.DEAD)
             binding.charactersRecyclerView.scrollToPosition(0)
         }
         return true
@@ -132,15 +135,18 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
         viewModel.onDeadToggle(menuItem.isChecked)
         if (menuItem.isChecked) {
             if (isAliveChecked) {
-                viewModel.characterStatus.value = CharacterStatus.ALL
+                viewModel.onCharacterStatusUpdate(CharacterStatus.ALL)
+                binding.charactersRecyclerView.scrollToPosition(0)
             } else {
-                viewModel.characterStatus.value = CharacterStatus.DEAD
+                viewModel.onCharacterStatusUpdate(CharacterStatus.DEAD)
+                binding.charactersRecyclerView.scrollToPosition(0)
             }
             binding.charactersRecyclerView.scrollToPosition(0)
         } else if (!isAliveChecked) {
-            viewModel.characterStatus.value = CharacterStatus.ALL
+            viewModel.onCharacterStatusUpdate(CharacterStatus.ALL)
+            binding.charactersRecyclerView.scrollToPosition(0)
         } else {
-            viewModel.characterStatus.value = CharacterStatus.ALIVE
+            viewModel.onCharacterStatusUpdate(CharacterStatus.ALIVE)
             binding.charactersRecyclerView.scrollToPosition(0)
         }
         return true

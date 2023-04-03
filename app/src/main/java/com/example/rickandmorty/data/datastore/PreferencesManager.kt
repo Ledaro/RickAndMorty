@@ -20,7 +20,7 @@ private const val TAG = "PreferencesManager"
 data class FilterPreferences(
     val statusAlive: Boolean,
     val statusDead: Boolean,
-/*    val characterStatus: CharacterStatus*/
+    val characterStatus: CharacterStatus
 )
 
 @Singleton
@@ -40,36 +40,38 @@ class PreferencesManager @Inject constructor(
             }
         }
         .map { preferences ->
-            val statusAlive = preferences[PreferencesKeys.STATUS_ALIVE] ?: false
-            val statusDead = preferences[PreferencesKeys.STATUS_DEAD] ?: false
-/*            val characterStatus =
-                preferences[PreferencesKeys.CHARACTER_STATUS] ?: CharacterStatus.ALL*/
-            FilterPreferences(statusAlive, statusDead)
+            val statusAlive = preferences[PreferencesKeys.ALIVE_STATE] ?: false
+            val statusDead = preferences[PreferencesKeys.DEAD_STATE] ?: false
+            val characterStatus = CharacterStatus.valueOf(
+                preferences[PreferencesKeys.CHARACTER_STATUS] ?: CharacterStatus.ALL.name
+            )
+
+            FilterPreferences(statusAlive, statusDead, characterStatus)
         }
 
     suspend fun updateStatusAlive(statusAlive: Boolean) {
         dataStore.edit { preferences ->
-            preferences[PreferencesKeys.STATUS_ALIVE] = statusAlive
+            preferences[PreferencesKeys.ALIVE_STATE] = statusAlive
         }
     }
 
     suspend fun updateStatusDead(statusDead: Boolean) {
         dataStore.edit { preferences ->
-            preferences[PreferencesKeys.STATUS_DEAD] = statusDead
+            preferences[PreferencesKeys.DEAD_STATE] = statusDead
 
         }
     }
 
-/*    suspend fun updateCharacterStatus(characterStatus: CharacterStatus) {
+    suspend fun updateCharacterStatus(characterStatus: CharacterStatus) {
         dataStore.edit { preferences ->
-            preferences[PreferencesKeys.CHARACTER_STATUS] = characterStatus
+            preferences[PreferencesKeys.CHARACTER_STATUS] = characterStatus.name
 
-        }*/
+        }
+    }
+
+    private object PreferencesKeys {
+        val ALIVE_STATE = preferencesKey<Boolean>("alive_state")
+        val DEAD_STATE = preferencesKey<Boolean>("dead_state")
+        val CHARACTER_STATUS = preferencesKey<String>("character_status")
+    }
 }
-
-private object PreferencesKeys {
-    val STATUS_ALIVE = preferencesKey<Boolean>("status_alive")
-    val STATUS_DEAD = preferencesKey<Boolean>("status_dead")
-/*        val CHARACTER_STATUS = preferencesKey<CharacterStatus>("character_status")*/
-}
-

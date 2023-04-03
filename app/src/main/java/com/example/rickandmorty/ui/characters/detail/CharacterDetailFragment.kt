@@ -37,7 +37,7 @@ class CharacterDetailFragment : Fragment(R.layout.fragment_detail) {
                     is CharacterDetailViewModel.CharacterDetailEvent.ShowSaveCharacterMessage -> {
                         Snackbar.make(
                             requireView(),
-                            getString(R.string.detail_location_button_save),
+                            getString(R.string.detail_snackbar_save_character_text),
                             Snackbar.LENGTH_SHORT
                         )
                             .show()
@@ -45,7 +45,7 @@ class CharacterDetailFragment : Fragment(R.layout.fragment_detail) {
                     is CharacterDetailViewModel.CharacterDetailEvent.ShowDeleteCharacterMessage -> {
                         Snackbar.make(
                             requireView(),
-                            getString(R.string.detail_location_button_delete),
+                            getString(R.string.detail_snackbar_delete_character_text),
                             Snackbar.LENGTH_SHORT
                         )
                             .show()

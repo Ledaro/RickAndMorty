@@ -22,26 +22,23 @@ class CharactersViewModel @Inject constructor(
     val searchQuery = state.getLiveData("search_query", "")
     val preferencesFlow = preferencesManager.preferencesFlow
 
-    val characterStatus = MutableStateFlow(state.get("character_status") ?: CharacterStatus.ALL)
-
-
     @OptIn(ExperimentalCoroutinesApi::class)
     private val charactersFlow = combine(
         searchQuery.asFlow(),
-        characterStatus
-    ) { query, characterStatus ->
-        Pair(query, characterStatus)
-    }.flatMapLatest { (query, characterStatus) ->
+        preferencesFlow
+    ) { query, filterPreferences ->
+        Pair(query, filterPreferences)
+    }.flatMapLatest { (query, filterPreferences) ->
         delay(500L)
-        repository.getSearchResults(query, characterStatus)
+        repository.getSearchResults(query, filterPreferences.characterStatus)
             .cachedIn(viewModelScope)
     }
 
     val characters = charactersFlow.asLiveData()
 
-/*    fun onCharacterStatusUpdate(characterStatus: CharacterStatus) = viewModelScope.launch {
+    fun onCharacterStatusUpdate(characterStatus: CharacterStatus) = viewModelScope.launch {
         preferencesManager.updateCharacterStatus(characterStatus)
-    }*/
+    }
 
     fun onAliveToggle(status: Boolean) = viewModelScope.launch {
         preferencesManager.updateStatusAlive(status)
@@ -51,5 +48,3 @@ class CharactersViewModel @Inject constructor(
         preferencesManager.updateStatusDead(status)
     }
 }
-
-/*enum class CharacterStatus { ALIVE, DEAD, ALL }*/

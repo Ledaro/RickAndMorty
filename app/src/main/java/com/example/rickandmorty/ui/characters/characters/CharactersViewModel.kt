@@ -1,5 +1,6 @@
 package com.example.rickandmorty.ui.characters.characters
 
+import android.util.Log
 import androidx.lifecycle.*
 import androidx.paging.cachedIn
 import com.example.rickandmorty.data.datastore.CharacterStatus
@@ -25,26 +26,27 @@ class CharactersViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     private val charactersFlow = combine(
         searchQuery.asFlow(),
-        preferencesFlow
+        preferencesFlow.distinctUntilChanged(),
     ) { query, filterPreferences ->
         Pair(query, filterPreferences)
     }.flatMapLatest { (query, filterPreferences) ->
+        Log.d("API_CALL", "Making API call for query: $query")
         delay(500L)
-        repository.getSearchResults(query, filterPreferences.characterStatus)
+        repository.getSearchResults(query, filterPreferences.isAlive, filterPreferences.isDead)
             .cachedIn(viewModelScope)
     }
 
     val characters = charactersFlow.asLiveData()
 
-    fun onCharacterStatusUpdate(characterStatus: CharacterStatus) = viewModelScope.launch {
+/*    fun onCharacterStatusUpdate(characterStatus: CharacterStatus) = viewModelScope.launch {
         preferencesManager.updateCharacterStatus(characterStatus)
-    }
+    }*/
 
     fun onAliveToggle(status: Boolean) = viewModelScope.launch {
-        preferencesManager.updateStatusAlive(status)
+        preferencesManager.updateIsAlive(status)
     }
 
     fun onDeadToggle(status: Boolean) = viewModelScope.launch {
-        preferencesManager.updateStatusDead(status)
+        preferencesManager.updateIsDead(status)
     }
 }

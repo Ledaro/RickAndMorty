@@ -20,7 +20,6 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.rickandmorty.R
-import com.example.rickandmorty.data.datastore.CharacterStatus
 import com.example.rickandmorty.databinding.FragmentCharactersBinding
 import com.example.rickandmorty.model.Character
 import com.example.rickandmorty.util.Constants.Companion.GRID_SPAN_COUNT
@@ -83,10 +82,10 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
 
                 viewLifecycleOwner.lifecycleScope.launch {
                     viewModel.preferencesFlow.first().let { preferences ->
-                        menu.findItem(R.id.action_toggle_alive).isChecked = preferences.statusAlive
-                        isAliveChecked = preferences.statusAlive
-                        menu.findItem(R.id.action_toggle_dead).isChecked = preferences.statusDead
-                        isDeadChecked = preferences.statusDead
+                        menu.findItem(R.id.action_toggle_alive).isChecked = preferences.isAlive
+/*                        isAliveChecked = preferences.statusAlive*/
+                        menu.findItem(R.id.action_toggle_dead).isChecked = preferences.isDead
+/*                        isDeadChecked = preferences.statusDead*/
                     }
                 }
             }
@@ -95,9 +94,11 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
                 return when (menuItem.itemId) {
                     R.id.action_toggle_alive -> {
                         handleAliveToggle(menuItem)
+                        true
                     }
                     R.id.action_toggle_dead -> {
                         handleDeadToggle(menuItem)
+                        true
                     }
                     else -> return false
                 }
@@ -107,50 +108,16 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
 
     private fun handleAliveToggle(menuItem: MenuItem): Boolean {
         menuItem.isChecked = !menuItem.isChecked
-        isAliveChecked = menuItem.isChecked
         viewModel.onAliveToggle(menuItem.isChecked)
-        if (menuItem.isChecked) {
-            if (isDeadChecked) {
-                viewModel.onCharacterStatusUpdate(CharacterStatus.ALL)
-                binding.charactersRecyclerView.scrollToPosition(0)
-            } else {
-                viewModel.onCharacterStatusUpdate(CharacterStatus.ALIVE)
-                binding.charactersRecyclerView.scrollToPosition(0)
-            }
-            binding.charactersRecyclerView.scrollToPosition(0)
-        } else if (!isDeadChecked) {
-            viewModel.onCharacterStatusUpdate(CharacterStatus.ALL)
-            binding.charactersRecyclerView.scrollToPosition(0)
-        } else {
-            viewModel.onCharacterStatusUpdate(CharacterStatus.DEAD)
-            binding.charactersRecyclerView.scrollToPosition(0)
-        }
+        binding.charactersRecyclerView.scrollToPosition(0)
         return true
-
     }
 
     private fun handleDeadToggle(menuItem: MenuItem): Boolean {
         menuItem.isChecked = !menuItem.isChecked
-        isDeadChecked = menuItem.isChecked
         viewModel.onDeadToggle(menuItem.isChecked)
-        if (menuItem.isChecked) {
-            if (isAliveChecked) {
-                viewModel.onCharacterStatusUpdate(CharacterStatus.ALL)
-                binding.charactersRecyclerView.scrollToPosition(0)
-            } else {
-                viewModel.onCharacterStatusUpdate(CharacterStatus.DEAD)
-                binding.charactersRecyclerView.scrollToPosition(0)
-            }
-            binding.charactersRecyclerView.scrollToPosition(0)
-        } else if (!isAliveChecked) {
-            viewModel.onCharacterStatusUpdate(CharacterStatus.ALL)
-            binding.charactersRecyclerView.scrollToPosition(0)
-        } else {
-            viewModel.onCharacterStatusUpdate(CharacterStatus.ALIVE)
-            binding.charactersRecyclerView.scrollToPosition(0)
-        }
+        binding.charactersRecyclerView.scrollToPosition(0)
         return true
-
     }
 
     override fun onItemClick(character: Character) {

@@ -3,13 +3,14 @@ package com.example.rickandmorty.ui.characters.characters
 import android.util.Log
 import androidx.lifecycle.*
 import androidx.paging.cachedIn
-import com.example.rickandmorty.data.datastore.CharacterStatus
 import com.example.rickandmorty.data.datastore.PreferencesManager
 import com.example.rickandmorty.data.repository.Repository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -37,10 +38,6 @@ class CharactersViewModel @Inject constructor(
     }
 
     val characters = charactersFlow.asLiveData()
-
-/*    fun onCharacterStatusUpdate(characterStatus: CharacterStatus) = viewModelScope.launch {
-        preferencesManager.updateCharacterStatus(characterStatus)
-    }*/
 
     fun onAliveToggle(status: Boolean) = viewModelScope.launch {
         preferencesManager.updateIsAlive(status)

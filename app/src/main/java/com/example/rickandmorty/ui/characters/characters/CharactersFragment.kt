@@ -1,6 +1,7 @@
 package com.example.rickandmorty.ui.characters.characters
 
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -34,12 +35,9 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
 
     private var _binding: FragmentCharactersBinding? = null
     private val binding get() = _binding!!
-    private var isAliveChecked = false
-    private var isDeadChecked = false
     private val viewModel: CharactersViewModel by viewModels()
     private lateinit var charactersAdapter: CharactersAdapter
     private lateinit var searchView: SearchView
-
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -73,6 +71,10 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
                     searchView.setQuery(pendingQuery, false)
                 }
 
+                if (pendingQuery!!.length <= 1) {
+                    viewModel.searchQuery.value = ""
+                }
+
                 searchView.onQueryTextChanged {
                     if (it.isNotEmpty()) {
                         binding.charactersRecyclerView.scrollToPosition(0)
@@ -83,9 +85,7 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
                 viewLifecycleOwner.lifecycleScope.launch {
                     viewModel.preferencesFlow.first().let { preferences ->
                         menu.findItem(R.id.action_toggle_alive).isChecked = preferences.isAlive
-/*                        isAliveChecked = preferences.statusAlive*/
                         menu.findItem(R.id.action_toggle_dead).isChecked = preferences.isDead
-/*                        isDeadChecked = preferences.statusDead*/
                     }
                 }
             }

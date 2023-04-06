@@ -1,7 +1,6 @@
 package com.example.rickandmorty.ui.characters.characters
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -38,6 +37,7 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
     private val viewModel: CharactersViewModel by viewModels()
     private lateinit var charactersAdapter: CharactersAdapter
     private lateinit var searchView: SearchView
+    private var navigationFlag: Boolean = true
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
@@ -74,6 +74,9 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
                 searchView.onQueryTextChanged {
                     if (it.isNotEmpty()) {
                         binding.charactersRecyclerView.scrollToPosition(0)
+                        viewModel.searchQuery.value = it
+                        navigationFlag = false
+                    } else if (!navigationFlag) {
                         viewModel.searchQuery.value = it
                     }
                 }
@@ -120,6 +123,7 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
         val action =
             CharactersFragmentDirections.actionCharactersFragmentToCharacterDetailFragment(character)
         findNavController().navigate(action)
+        navigationFlag = true
     }
 
     private fun handleLoadStateListener(loadState: CombinedLoadStates) {

@@ -1,6 +1,5 @@
 package com.example.rickandmorty.ui.characters.characters
 
-import android.util.Log
 import androidx.lifecycle.*
 import androidx.paging.cachedIn
 import com.example.rickandmorty.data.datastore.PreferencesManager
@@ -31,7 +30,6 @@ class CharactersViewModel @Inject constructor(
     ) { query, filterPreferences ->
         Pair(query, filterPreferences)
     }.flatMapLatest { (query, filterPreferences) ->
-        Log.d("API_CALL", "Making API call for query: $query")
         delay(500L)
         repository.getSearchResults(query, filterPreferences.isAlive, filterPreferences.isDead)
             .cachedIn(viewModelScope)

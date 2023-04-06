@@ -13,14 +13,11 @@ import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
-enum class CharacterStatus { ALIVE, DEAD, ALL }
-
 private const val TAG = "PreferencesManager"
 
 data class FilterPreferences(
     val isAlive: Boolean,
     val isDead: Boolean,
-/*    val characterStatus: CharacterStatus*/
 )
 
 @Singleton
@@ -42,10 +39,6 @@ class PreferencesManager @Inject constructor(
         .map { preferences ->
             val isAlive = preferences[PreferencesKeys.ALIVE_STATE] ?: false
             val isDead = preferences[PreferencesKeys.DEAD_STATE] ?: false
-/*            val characterStatus = CharacterStatus.valueOf(
-                preferences[PreferencesKeys.CHARACTER_STATUS] ?: CharacterStatus.ALL.name
-            )*/
-
             FilterPreferences(isAlive, isDead)
         }
 
@@ -62,16 +55,8 @@ class PreferencesManager @Inject constructor(
         }
     }
 
-/*    suspend fun updateCharacterStatus(characterStatus: CharacterStatus) {
-        dataStore.edit { preferences ->
-            preferences[PreferencesKeys.CHARACTER_STATUS] = characterStatus.name
-
-        }
-    }*/
-
     private object PreferencesKeys {
         val ALIVE_STATE = preferencesKey<Boolean>("alive_state")
         val DEAD_STATE = preferencesKey<Boolean>("dead_state")
-/*        val CHARACTER_STATUS = preferencesKey<String>("character_status")*/
     }
 }

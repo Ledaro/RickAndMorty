@@ -20,7 +20,6 @@ class Repository @Inject constructor(
     //API
     fun getSearchResults(query: String, isAlive: Boolean, isDead: Boolean) =
         run {
-            Log.d("REPO_CALL", "getSearchResults() function is triggered")
             Pager(
                 config = PagingConfig(
                     pageSize = 20,

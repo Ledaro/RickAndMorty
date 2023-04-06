@@ -37,7 +37,6 @@ class CharacterDetailViewModel @Inject constructor(private val repository: Repos
     sealed class CharacterDetailEvent {
         data class ShowSaveCharacterMessage(val character: Character) :
             CharacterDetailEvent()
-
         data class ShowDeleteCharacterMessage(val character: Character) : CharacterDetailEvent()
     }
 }

@@ -23,8 +23,10 @@ import com.example.rickandmorty.R
 import com.example.rickandmorty.databinding.FragmentCharactersBinding
 import com.example.rickandmorty.model.Character
 import com.example.rickandmorty.util.Constants.Companion.GRID_SPAN_COUNT
+import com.example.rickandmorty.util.exhaustive
 import com.example.rickandmorty.util.onQueryTextChanged
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
@@ -87,6 +89,21 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
                         menu.findItem(R.id.action_toggle_dead).isChecked = preferences.isDead
                     }
                 }
+
+                viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                    viewModel.charactersEvent.collect { event ->
+                        when (event) {
+                            is CharactersViewModel.CharactersEvent.NavigateToDetailScreen -> {
+                                navigationFlag = true
+                                val action =
+                                    CharactersFragmentDirections.actionCharactersFragmentToCharacterDetailFragment(
+                                        event.character
+                                    )
+                                findNavController().navigate(action)
+                            }
+                        }.exhaustive
+                    }
+                }
             }
 
             override fun onMenuItemSelected(menuItem: MenuItem): Boolean {
@@ -120,10 +137,7 @@ class CharactersFragment : Fragment(R.layout.fragment_characters),
     }
 
     override fun onItemClick(character: Character) {
-        val action =
-            CharactersFragmentDirections.actionCharactersFragmentToCharacterDetailFragment(character)
-        findNavController().navigate(action)
-        navigationFlag = true
+        viewModel.onCharacterSelected(character)
     }
 
     private fun handleLoadStateListener(loadState: CombinedLoadStates) {

@@ -15,7 +15,6 @@ class CharactersPagingSource(
 
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, com.example.rickandmorty.model.Character> {
         val position = params.key ?: STARTING_PAGE_INDEX
-        val isFirstPage = position == STARTING_PAGE_INDEX
 
         return try {
             val response = api.searchCharacter(position, query, status)
@@ -23,7 +22,7 @@ class CharactersPagingSource(
 
             LoadResult.Page(
                 data = characters,
-                prevKey = if (isFirstPage) null else position - 1,
+                prevKey = if (position == STARTING_PAGE_INDEX) null else position - 1,
                 nextKey = if (characters.isEmpty()) null else position + 1
             )
         } catch (exception: IOException) {

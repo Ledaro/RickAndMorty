@@ -4,12 +4,15 @@ import androidx.lifecycle.*
 import androidx.paging.cachedIn
 import com.example.rickandmorty.data.datastore.PreferencesManager
 import com.example.rickandmorty.data.repository.Repository
+import com.example.rickandmorty.model.Character
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,6 +25,9 @@ class CharactersViewModel @Inject constructor(
 
     val searchQuery = state.getLiveData("search_query", "")
     val preferencesFlow = preferencesManager.preferencesFlow
+
+    private val charactersEventChannel = Channel<CharactersEvent>()
+    val charactersEvent = charactersEventChannel.receiveAsFlow()
 
     @OptIn(ExperimentalCoroutinesApi::class)
     private val charactersFlow = combine(
@@ -43,5 +49,13 @@ class CharactersViewModel @Inject constructor(
 
     fun onDeadToggle(status: Boolean) = viewModelScope.launch {
         preferencesManager.updateIsDead(status)
+    }
+
+    fun onCharacterSelected(character: Character) = viewModelScope.launch {
+        charactersEventChannel.send(CharactersEvent.NavigateToDetailScreen(character))
+    }
+
+    sealed class CharactersEvent {
+        data class NavigateToDetailScreen(val character: Character) : CharactersEvent()
     }
 }

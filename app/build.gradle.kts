@@ -2,6 +2,19 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.apollo)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
+}
+
+apollo {
+    service("service") {
+        packageName.set("com.zeltech")
+        introspection {
+            endpointUrl.set("https://rickandmortyapi.com/graphql")
+            schemaFile.set(file("src/main/graphql/com/zeltech/schema.graphqls"))
+        }
+    }
 }
 
 android {
@@ -56,4 +69,12 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+
+    //Apollo
+    implementation(libs.apollo)
+
+    //Dagger Hilt
+    implementation(libs.hilt)
+    implementation(libs.hilt.navigation)
+    ksp(libs.hilt.compiler)
 }

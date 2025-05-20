@@ -1,4 +1,4 @@
-package com.zeltech.rickandmorty.common.data.model
+package com.zeltech.rickandmorty.common.domain.model
 
 import androidx.compose.ui.text.LinkAnnotation.Url
 import kotlinx.serialization.SerialName

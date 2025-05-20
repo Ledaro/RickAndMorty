@@ -1,9 +1,9 @@
-package com.zeltech.rickandmorty.characters.data
+package com.zeltech.rickandmorty.features.characters.data.mapper
 
 import com.zeltech.CharacterQuery
-import com.zeltech.rickandmorty.common.data.model.Character
-import com.zeltech.rickandmorty.common.data.model.Episode
-import com.zeltech.rickandmorty.common.data.model.Location
+import com.zeltech.rickandmorty.common.domain.model.Character
+import com.zeltech.rickandmorty.common.domain.model.Episode
+import com.zeltech.rickandmorty.common.domain.model.Location
 
 fun CharacterQuery.Character.toDomain(): Character {
     return Character(

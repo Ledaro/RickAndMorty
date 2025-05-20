@@ -1,0 +1,13 @@
+query Characters {
+    characters{
+        info {
+            count
+            pages
+            next
+            prev
+        }
+        results {
+            id
+        }
+    }
+}

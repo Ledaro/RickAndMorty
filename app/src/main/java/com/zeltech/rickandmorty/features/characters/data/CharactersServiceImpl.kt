@@ -7,8 +7,9 @@ import com.zeltech.rickandmorty.features.characters.domain.CharactersService
 import com.zeltech.rickandmorty.common.domain.model.Character
 import com.zeltech.rickandmorty.common.domain.model.CharactersResponse
 import com.zeltech.rickandmorty.features.characters.data.mapper.toDomain
+import javax.inject.Inject
 
-class CharactersServiceImpl(
+class CharactersServiceImpl @Inject constructor(
     private val client: ApolloClient
 ) : CharactersService {
     override suspend fun getAllCharacters(): CharactersResponse? {

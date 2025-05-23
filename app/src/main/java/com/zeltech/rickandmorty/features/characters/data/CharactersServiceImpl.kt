@@ -11,14 +11,13 @@ import com.zeltech.rickandmorty.features.characters.data.mapper.toDomain
 class CharactersServiceImpl(
     private val client: ApolloClient
 ) : CharactersService {
-    override suspend fun getCharacters(): CharactersResponse? {
+    override suspend fun getAllCharacters(): CharactersResponse? {
         return client
             .query(CharactersQuery())
             .execute()
             .data
             ?.characters
             ?.toDomain()
-
     }
 
     override suspend fun getCharacter(id: String): Character? {

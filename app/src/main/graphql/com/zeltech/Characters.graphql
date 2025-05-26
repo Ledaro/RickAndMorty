@@ -1,5 +1,5 @@
-query Characters {
-    characters{
+query Characters($name: String) {
+    characters(filter: {name: $name}){
         info {
             count
             pages
@@ -8,6 +8,8 @@ query Characters {
         }
         results {
             id
+            name
+            image
         }
     }
 }

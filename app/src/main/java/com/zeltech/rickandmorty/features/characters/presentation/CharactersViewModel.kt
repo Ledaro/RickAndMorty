@@ -3,8 +3,8 @@ package com.zeltech.rickandmorty.features.characters.presentation
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.zeltech.rickandmorty.common.domain.model.Character
 import com.zeltech.rickandmorty.features.characters.domain.CharactersService
+import com.zeltech.rickandmorty.features.characters.presentation.CharactersViewModelContract.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,13 +17,8 @@ import javax.inject.Inject
 class CharactersViewModel @Inject constructor(
     private val charactersService: CharactersService
 ) : ViewModel() {
-
-    data class CharactersState(
-        val characters: List<Character>? = null
-    )
-
-    private val _state = MutableStateFlow(CharactersState())
-    val state: StateFlow<CharactersState> = _state.asStateFlow()
+    private val _state = MutableStateFlow(UiState())
+    val state: StateFlow<UiState> = _state.asStateFlow()
 
     init {
         getAllCharacters()
@@ -38,6 +33,25 @@ class CharactersViewModel @Inject constructor(
                 }
             } catch (e: Exception) {
                 Log.e("CharactersViewModel", "Error fetching characters", e)
+            }
+        }
+    }
+
+    internal fun searchCharacters(query: String) {
+        viewModelScope.launch {
+            _state.update { currentState ->
+                currentState.copy(query = query)
+            }
+
+            try {
+                val characters = charactersService.getFilteredCharacters(query)?.results
+                _state.update { currentState ->
+                    currentState.copy(
+                        characters = characters
+                    )
+                }
+            } catch (e: Exception) {
+                Log.e("CharactersViewModel", "Error searching characters", e)
             }
         }
     }

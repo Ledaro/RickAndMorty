@@ -23,6 +23,8 @@ fun CharactersQuery.Info.toDomain(): Info {
 
 fun CharactersQuery.Result.toDomain(): Character {
     return Character(
-        id = id
+        id = id,
+        name = name,
+        image = image
     )
 }

@@ -1,6 +1,7 @@
 package com.zeltech.rickandmorty.features.characters.data
 
 import com.apollographql.apollo.ApolloClient
+import com.apollographql.apollo.api.Optional
 import com.zeltech.CharacterQuery
 import com.zeltech.CharactersQuery
 import com.zeltech.rickandmorty.features.characters.domain.CharactersService
@@ -15,6 +16,15 @@ class CharactersServiceImpl @Inject constructor(
     override suspend fun getAllCharacters(): CharactersResponse? {
         return client
             .query(CharactersQuery())
+            .execute()
+            .data
+            ?.characters
+            ?.toDomain()
+    }
+
+    override suspend fun getFilteredCharacters(name: String?): CharactersResponse? {
+        return client
+            .query(CharactersQuery(Optional.presentIfNotNull(name)))
             .execute()
             .data
             ?.characters

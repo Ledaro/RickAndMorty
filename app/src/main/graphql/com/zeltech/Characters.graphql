@@ -1,5 +1,5 @@
-query Characters($name: String, $gender: String) {
-    characters(filter: {name: $name, gender: $gender}){
+query Characters($name: String, $status: String, $gender: String) {
+    characters(filter: {name: $name, status: $status gender: $gender}){
         info {
             count
             pages

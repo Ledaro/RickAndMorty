@@ -2,6 +2,7 @@ package com.zeltech.rickandmorty.features.characters.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -35,8 +36,10 @@ import com.zeltech.rickandmorty.R
 import com.zeltech.rickandmorty.common.domain.model.Character
 import com.zeltech.rickandmorty.common.presentation.CustomSearchBar
 import com.zeltech.rickandmorty.features.characters.presentation.components.CharacterItem
-import com.zeltech.rickandmorty.features.characters.presentation.components.filters.gender.Gender
-import com.zeltech.rickandmorty.features.characters.presentation.components.filters.gender.GenderFilter
+import com.zeltech.rickandmorty.features.characters.presentation.components.filters.gender.GendersFilter
+import com.zeltech.rickandmorty.features.characters.presentation.components.filters.gender.model.Gender
+import com.zeltech.rickandmorty.features.characters.presentation.components.filters.status.StatusesFilter
+import com.zeltech.rickandmorty.features.characters.presentation.components.filters.status.model.Status
 import com.zeltech.rickandmorty.ui.theme.RickAndMortyTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,6 +54,7 @@ fun CharactersScreen() {
         isLoading = state.isLoading,
         selectedGender = state.selectedGender,
         onQueryChange = viewModel::onSearchQueryChanged,
+        onStatusSelected = viewModel::onStatusSelected,
         onGenderSelected = viewModel::onGenderSelected,
     )
 }
@@ -58,12 +62,14 @@ fun CharactersScreen() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatelessCharactersScreen(
+    isLoading: Boolean = false,
     characters: List<Character>?,
     query: String = "",
-    isLoading: Boolean = false,
+    selectedStatus: Status? = null,
     selectedGender: Gender? = null,
-    onQueryChange: (String) -> Unit = {},
-    onGenderSelected: (Gender) -> Unit = {},
+    onQueryChange: (String) -> Unit,
+    onStatusSelected: (Status) -> Unit,
+    onGenderSelected: (Gender) -> Unit,
 ) {
     val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -98,10 +104,16 @@ fun StatelessCharactersScreen(
                 sheetState = sheetState,
                 dragHandle = null,
             ) {
-                GenderFilter(
-                    selectedGender = selectedGender,
-                    onGenderSelected = onGenderSelected,
-                )
+                Column {
+                    StatusesFilter(
+                        selectedStatus = selectedStatus,
+                        onStatusSelected = onStatusSelected,
+                    )
+                    GendersFilter(
+                        selectedGender = selectedGender,
+                        onGenderSelected = onGenderSelected,
+                    )
+                }
             }
         }
 
@@ -152,6 +164,9 @@ fun CharactersScreenPreview() {
     RickAndMortyTheme {
         StatelessCharactersScreen(
             characters = listOf(),
+            onQueryChange = {},
+            onStatusSelected = {},
+            onGenderSelected = {},
         )
     }
 }

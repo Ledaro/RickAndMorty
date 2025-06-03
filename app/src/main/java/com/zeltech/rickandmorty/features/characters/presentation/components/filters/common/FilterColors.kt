@@ -1,4 +1,4 @@
-package com.zeltech.rickandmorty.features.characters.presentation.components.filters.gender
+package com.zeltech.rickandmorty.features.characters.presentation.components.filters.common
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SelectableChipColors

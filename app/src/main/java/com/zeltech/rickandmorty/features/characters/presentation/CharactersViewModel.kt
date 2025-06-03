@@ -1,12 +1,12 @@
 package com.zeltech.rickandmorty.features.characters.presentation
 
 import android.util.Log
-import androidx.compose.animation.core.copy
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.zeltech.rickandmorty.features.characters.domain.CharactersService
 import com.zeltech.rickandmorty.features.characters.presentation.CharactersViewModelContract.UiState
-import com.zeltech.rickandmorty.features.characters.presentation.components.filters.gender.Gender
+import com.zeltech.rickandmorty.features.characters.presentation.components.filters.gender.model.Gender
+import com.zeltech.rickandmorty.features.characters.presentation.components.filters.status.model.Status
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -32,6 +32,7 @@ class CharactersViewModel
 
         private val _searchQueryFlow = MutableStateFlow("")
         private val _selectedGenderFlow = MutableStateFlow<Gender?>(null)
+        private val _selectedStatusFlow = MutableStateFlow<Status?>(null)
 
         init {
             getAllCharacters()
@@ -39,11 +40,12 @@ class CharactersViewModel
             viewModelScope.launch {
                 combine(
                     _searchQueryFlow.debounce(500).distinctUntilChanged(),
+                    _selectedStatusFlow,
                     _selectedGenderFlow,
-                ) { query, gender ->
-                    Pair(query, gender)
-                }.collectLatest { (query, gender) ->
-                    performSearchWithFilters(query, gender)
+                ) { query, status, gender ->
+                    Triple(query, status, gender)
+                }.collectLatest { (query, status, gender) ->
+                    performSearchWithFilters(query, status, gender)
                 }
             }
         }
@@ -70,6 +72,7 @@ class CharactersViewModel
 
         private fun performSearchWithFilters(
             query: String,
+            status: Status?,
             gender: Gender?,
         ) {
             _state.update { currentState ->
@@ -78,14 +81,14 @@ class CharactersViewModel
                 )
             }
 
-            val genderFilterValue = gender?.displayName
             viewModelScope.launch {
                 try {
                     val characters =
                         charactersService
                             .getFilteredCharacters(
                                 query,
-                                genderFilterValue,
+                                status?.displayName,
+                                gender?.displayName,
                             )?.results
                     _state.update { currentState ->
                         currentState.copy(
@@ -104,6 +107,15 @@ class CharactersViewModel
                 currentState.copy(query = newQuery)
             }
             _searchQueryFlow.value = newQuery
+        }
+
+        fun onStatusSelected(status: Status?) {
+            _state.update { currentState ->
+                currentState.copy(selectedStatus = status)
+            }
+            status?.let {
+                _selectedStatusFlow.value = status
+            }
         }
 
         fun onGenderSelected(gender: Gender?) {

@@ -25,12 +25,14 @@ class CharactersServiceImpl
 
         override suspend fun getFilteredCharacters(
             name: String?,
+            status: String?,
             gender: String?,
         ): CharactersResponse? =
             client
                 .query(
                     CharactersQuery(
                         Optional.presentIfNotNull(name),
+                        Optional.presentIfNotNull(status),
                         Optional.presentIfNotNull(gender),
                     ),
                 ).execute()

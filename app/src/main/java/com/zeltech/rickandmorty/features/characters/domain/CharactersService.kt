@@ -8,6 +8,7 @@ interface CharactersService {
 
     suspend fun getFilteredCharacters(
         name: String?,
+        status: String?,
         gender: String?,
     ): CharactersResponse?
 

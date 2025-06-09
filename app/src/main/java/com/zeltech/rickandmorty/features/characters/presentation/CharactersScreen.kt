@@ -1,15 +1,21 @@
 package com.zeltech.rickandmorty.features.characters.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -82,9 +88,7 @@ fun StatelessCharactersScreen(
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = {
-                    Text(text = "Characters")
-                },
+                title = { Text(text = "Characters") },
                 actions = {
                     BadgedBox(
                         badge = {
@@ -92,20 +96,14 @@ fun StatelessCharactersScreen(
                                 Badge(
                                     containerColor = Color.Red,
                                     contentColor = Color.White,
-                                ) {
-                                    Text("$filterCount")
-                                }
+                                ) { Text("$filterCount") }
                             }
                         },
                     ) {
-                        IconButton(
-                            onClick = {
-                                showBottomSheet = true
-                            },
-                        ) {
+                        IconButton(onClick = { showBottomSheet = true }) {
                             Icon(
                                 painter = painterResource(R.drawable.ic_filter_circle),
-                                contentDescription = "Search",
+                                contentDescription = "Open Filters",
                             )
                         }
                     }
@@ -124,47 +122,45 @@ fun StatelessCharactersScreen(
                     onApplyFiltersButtonClick()
                     showBottomSheet = false
                 },
-                onDismissRequest = {
-                    showBottomSheet = false
-                },
+                onDismissRequest = { showBottomSheet = false },
             )
         }
 
-        LazyColumn(
-            modifier =
-                Modifier
-                    .fillMaxSize()
-                    .padding(innerPadding)
-                    .padding(horizontal = 8.dp),
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
         ) {
-            characters?.let { characters ->
-                stickyHeader {
-                    CustomSearchBar(
-                        query = query,
-                        modifier =
-                            Modifier
-                                .fillMaxWidth()
-                                .padding(bottom = 8.dp)
-                                .clip(CircleShape)
-                                .background(MaterialTheme.colorScheme.surface),
-                        onQueryChange = onQueryChange,
-                    )
-                }
+            CustomSearchBar(
+                query = query,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+                    .padding(top = 8.dp, bottom = 8.dp)
+                    .clip(CircleShape)
+                    .background(MaterialTheme.colorScheme.surface),
+                onQueryChange = onQueryChange,
+            )
+
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
                 if (isLoading) {
-                    item {
-                        Box(
-                            modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 32.dp),
-                            contentAlignment = Alignment.Center,
-                        ) {
-                            CircularProgressIndicator()
-                        }
-                    }
+                    CircularProgressIndicator()
+                } else if (characters.isNullOrEmpty()) {
+                    Text("No characters found.")
                 } else {
-                    items(characters) { character ->
-                        CharacterItem(character)
+                    LazyColumn(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = 8.dp),
+                    ) {
+                        items(characters) { character ->
+                            CharacterItem(character)
+                        }
                     }
                 }
             }

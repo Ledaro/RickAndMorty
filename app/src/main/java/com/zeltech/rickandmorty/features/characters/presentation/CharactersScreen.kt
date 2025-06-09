@@ -1,16 +1,20 @@
 package com.zeltech.rickandmorty.features.characters.presentation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -29,7 +33,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -43,20 +46,17 @@ import com.zeltech.rickandmorty.features.characters.presentation.components.Char
 import com.zeltech.rickandmorty.features.characters.presentation.components.filters.FiltersBottomDrawer
 import com.zeltech.rickandmorty.features.characters.presentation.components.filters.gender.model.Gender
 import com.zeltech.rickandmorty.features.characters.presentation.components.filters.status.model.Status
-import com.zeltech.rickandmorty.ui.theme.RickAndMortyTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CharactersScreen() {
     val viewModel = hiltViewModel<CharactersViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
-    val pagingItems = viewModel.pager.collectAsLazyPagingItems()
+    val characters = viewModel.charactersPagingDataFlow.collectAsLazyPagingItems()
 
     StatelessCharactersScreen(
-        pagingItems = pagingItems,
-        characters = state.characters,
+        characters = characters,
         query = state.query,
-        isLoading = state.isLoading,
         selectedGender = state.pendingSelectedGender,
         selectedStatus = state.pendingSelectedStatus,
         filterCount = state.activeFilterCount,
@@ -71,9 +71,7 @@ fun CharactersScreen() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatelessCharactersScreen(
-    pagingItems: LazyPagingItems<Character>,
-    isLoading: Boolean = false,
-    characters: List<Character>?,
+    characters: LazyPagingItems<Character>,
     query: String = "",
     selectedStatus: Status? = null,
     selectedGender: Gender? = null,
@@ -144,35 +142,92 @@ fun StatelessCharactersScreen(
 
             Box(
                 modifier = Modifier
-                    .weight(1f)
+                    .weight(1f) // If inside a Column that also has the search bar
                     .fillMaxWidth(),
                 contentAlignment = Alignment.Center
             ) {
-                if (isLoading) {
-                    CircularProgressIndicator()
-                } else if (characters.isNullOrEmpty()) {
-                    Text("No characters found.")
-                } else {
-                    LazyColumn(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .padding(horizontal = 8.dp)
-                    ) {
-                        items(pagingItems.itemCount) { index ->
-                            val character = pagingItems[index]
-                            if (character != null) {
-                                CharacterItem(character)
+                // THIS IS THE KEY PART for the main loading indicator
+                when (val refreshState = characters.loadState.refresh) {
+                    is LoadState.Loading -> {
+                        // This is when the Pager is doing a full refresh (initial load or after parameter change)
+                        CircularProgressIndicator()
+                    }
+
+                    is LoadState.Error -> {
+                        val error = refreshState.error
+                        Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                            Text(
+                                "Error: ${error.localizedMessage ?: "Unknown error"}",
+                                color = MaterialTheme.colorScheme.error
+                            )
+                            Spacer(Modifier.height(8.dp))
+                            Button(onClick = { characters.retry() }) {
+                                Text("Retry Refresh")
                             }
                         }
+                    }
 
-                        pagingItems.apply {
-                            when {
-                                loadState.append is LoadState.Loading -> {
-                                    item { CircularProgressIndicator(modifier = Modifier.padding(16.dp)) }
+                    is LoadState.NotLoading -> {
+                        // Refresh is NotLoading. Now check if the list is empty.
+                        // Also check append/prepend states to ensure we are not in the middle of loading more.
+                        if (characters.itemCount == 0 &&
+                            !(characters.loadState.append is LoadState.Loading ||
+                                    characters.loadState.prepend is LoadState.Loading ||
+                                    characters.loadState.source.refresh is LoadState.Loading // Additional check
+                                    )
+                        ) {
+                            Text("No characters found.")
+                        } else {
+                            // Display the list
+                            LazyColumn(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .padding(horizontal = 8.dp),
+                            ) {
+                                items(characters.itemCount) { index ->
+                                    val character = characters[index]
+                                    if (character != null) {
+                                        CharacterItem(character)
+                                    }
                                 }
 
-                                loadState.refresh is LoadState.Error -> {
-                                    item { Text("Błąd ładowania danych") }
+                                // Handle append loading state (for pagination spinner at the bottom)
+                                when (val appendState =
+                                    characters.loadState.append) {
+                                    is LoadState.Loading -> {
+                                        item {
+                                            Row(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(vertical = 16.dp),
+                                                horizontalArrangement = Arrangement.Center
+                                            ) {
+                                                CircularProgressIndicator()
+                                            }
+                                        }
+                                    }
+
+                                    is LoadState.Error -> {
+                                        item {
+                                            Column(
+                                                modifier = Modifier
+                                                    .fillMaxWidth()
+                                                    .padding(16.dp),
+                                                horizontalAlignment = Alignment.CenterHorizontally
+                                            ) {
+                                                Text(
+                                                    "Error loading more.",
+                                                    color = MaterialTheme.colorScheme.error
+                                                )
+                                                Button(onClick = { characters.retry() }) {
+                                                    Text("Retry Load More")
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    else -> { /* NotLoading or EndOfPaginationReached */
+                                    }
                                 }
                             }
                         }

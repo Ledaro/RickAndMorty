@@ -5,6 +5,6 @@ enum class Gender(
 ) {
     MALE("Male"),
     FEMALE("Female"),
-    AGENDER("Agender"),
+    GENDERLESS("Genderless"),
     UNKNOWN("Unknown"),
 }

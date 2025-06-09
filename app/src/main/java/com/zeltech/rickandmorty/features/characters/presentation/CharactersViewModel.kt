@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.debounce
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.update
@@ -37,15 +36,25 @@ class CharactersViewModel
         init {
             getAllCharacters()
 
+//            viewModelScope.launch {
+//                combine(
+//                    _searchQueryFlow.debounce(500).distinctUntilChanged(),
+//                    _selectedStatusFlow,
+//                    _selectedGenderFlow,
+//                ) { query, status, gender ->
+//                    Triple(query, status, gender)
+//                }.collectLatest { (query, status, gender) ->
+//                    performSearchWithFilters(query, status, gender)
+//                }
+//            }
+
             viewModelScope.launch {
-                combine(
-                    _searchQueryFlow.debounce(500).distinctUntilChanged(),
-                    _selectedStatusFlow,
-                    _selectedGenderFlow,
-                ) { query, status, gender ->
-                    Triple(query, status, gender)
-                }.collectLatest { (query, status, gender) ->
-                    performSearchWithFilters(query, status, gender)
+                _searchQueryFlow.debounce(500).distinctUntilChanged().collectLatest { query ->
+                    performSearchWithFilters(
+                        query,
+                        _state.value.appliedSelectedStatus,
+                        _state.value.appliedSelectedGender,
+                    )
                 }
             }
         }
@@ -70,10 +79,20 @@ class CharactersViewModel
             }
         }
 
-        private fun performSearchWithFilters(
-            query: String,
+        private fun calculateAppliedFiltersCount(
             status: Status?,
             gender: Gender?,
+        ): Int {
+            var count = 0
+            if (gender != null) count++
+            if (status != null) count++
+            return count
+        }
+
+        private fun performSearchWithFilters(
+            query: String,
+            statusToUse: Status?,
+            genderToUse: Gender?,
         ) {
             _state.update { currentState ->
                 currentState.copy(
@@ -87,8 +106,8 @@ class CharactersViewModel
                         charactersService
                             .getFilteredCharacters(
                                 query,
-                                status?.displayName,
-                                gender?.displayName,
+                                statusToUse?.displayName,
+                                genderToUse?.displayName,
                             )?.results
                     _state.update { currentState ->
                         currentState.copy(
@@ -109,21 +128,37 @@ class CharactersViewModel
             _searchQueryFlow.value = newQuery
         }
 
-        fun onStatusSelected(status: Status?) {
+        fun onPendingStatusSelected(status: Status?) {
             _state.update { currentState ->
-                currentState.copy(selectedStatus = status)
-            }
-            status?.let {
-                _selectedStatusFlow.value = status
+                currentState.copy(pendingSelectedStatus = status)
             }
         }
 
-        fun onGenderSelected(gender: Gender?) {
+        fun onPendingGenderSelected(gender: Gender?) {
             _state.update { currentState ->
-                currentState.copy(selectedGender = gender)
+                currentState.copy(pendingSelectedGender = gender)
             }
-            gender?.let {
-                _selectedGenderFlow.value = gender
+        }
+
+        fun onApplyFiltersClicked() {
+            val pendingStatus = _state.value.pendingSelectedStatus
+            val pendingGender = _state.value.pendingSelectedGender
+            val currentQuery = _state.value.query // Or _searchQueryInput.value
+
+            _state.update { currentState ->
+                currentState.copy(
+                    // Promote pending filters to applied filters
+                    appliedSelectedStatus = pendingStatus,
+                    appliedSelectedGender = pendingGender,
+                    activeFilterCount = calculateAppliedFiltersCount(pendingStatus, pendingGender),
+                )
             }
+
+            // Perform the search with the newly applied filters and current query
+            performSearchWithFilters(
+                query = currentQuery,
+                statusToUse = pendingStatus,
+                genderToUse = pendingGender,
+            )
         }
     }

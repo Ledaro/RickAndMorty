@@ -2,23 +2,22 @@ package com.zeltech.rickandmorty.features.characters.presentation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -27,6 +26,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
@@ -36,9 +36,8 @@ import com.zeltech.rickandmorty.R
 import com.zeltech.rickandmorty.common.domain.model.Character
 import com.zeltech.rickandmorty.common.presentation.CustomSearchBar
 import com.zeltech.rickandmorty.features.characters.presentation.components.CharacterItem
-import com.zeltech.rickandmorty.features.characters.presentation.components.filters.gender.GendersFilter
+import com.zeltech.rickandmorty.features.characters.presentation.components.filters.FiltersBottomDrawer
 import com.zeltech.rickandmorty.features.characters.presentation.components.filters.gender.model.Gender
-import com.zeltech.rickandmorty.features.characters.presentation.components.filters.status.StatusesFilter
 import com.zeltech.rickandmorty.features.characters.presentation.components.filters.status.model.Status
 import com.zeltech.rickandmorty.ui.theme.RickAndMortyTheme
 
@@ -52,10 +51,13 @@ fun CharactersScreen() {
         characters = state.characters,
         query = state.query,
         isLoading = state.isLoading,
-        selectedGender = state.selectedGender,
+        selectedGender = state.pendingSelectedGender,
+        selectedStatus = state.pendingSelectedStatus,
+        filterCount = state.activeFilterCount,
         onQueryChange = viewModel::onSearchQueryChanged,
-        onStatusSelected = viewModel::onStatusSelected,
-        onGenderSelected = viewModel::onGenderSelected,
+        onStatusSelected = viewModel::onPendingStatusSelected,
+        onGenderSelected = viewModel::onPendingGenderSelected,
+        onApplyFiltersButtonClick = viewModel::onApplyFiltersClicked,
     )
 }
 
@@ -67,61 +69,70 @@ fun StatelessCharactersScreen(
     query: String = "",
     selectedStatus: Status? = null,
     selectedGender: Gender? = null,
+    filterCount: Int,
     onQueryChange: (String) -> Unit,
-    onStatusSelected: (Status) -> Unit,
-    onGenderSelected: (Gender) -> Unit,
+    onStatusSelected: (Status?) -> Unit,
+    onGenderSelected: (Gender?) -> Unit,
+    onApplyFiltersButtonClick: () -> Unit,
 ) {
-    val sheetState = rememberModalBottomSheetState()
     var showBottomSheet by remember { mutableStateOf(false) }
 
     Scaffold(
-        modifier = Modifier.padding(horizontal = 8.dp),
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
                     Text(text = "Characters")
                 },
                 actions = {
-                    IconButton(
-                        onClick = {
-                            showBottomSheet = true
+                    BadgedBox(
+                        badge = {
+                            if (filterCount > 0) {
+                                Badge(
+                                    containerColor = Color.Red,
+                                    contentColor = Color.White,
+                                ) {
+                                    Text("$filterCount")
+                                }
+                            }
                         },
                     ) {
-                        Icon(
-                            painter = painterResource(R.drawable.ic_filter_circle),
-                            contentDescription = "Search",
-                        )
+                        IconButton(
+                            onClick = {
+                                showBottomSheet = true
+                            },
+                        ) {
+                            Icon(
+                                painter = painterResource(R.drawable.ic_filter_circle),
+                                contentDescription = "Search",
+                            )
+                        }
                     }
                 },
             )
         },
     ) { innerPadding ->
         if (showBottomSheet) {
-            ModalBottomSheet(
+            FiltersBottomDrawer(
+                selectedStatus = selectedStatus,
+                selectedGender = selectedGender,
+                onStatusSelected = onStatusSelected,
+                onGenderSelected = onGenderSelected,
+                onApplyFiltersButtonClick = {
+                    onApplyFiltersButtonClick()
+                    showBottomSheet = false
+                },
                 onDismissRequest = {
                     showBottomSheet = false
                 },
-                sheetState = sheetState,
-                dragHandle = null,
-            ) {
-                Column {
-                    StatusesFilter(
-                        selectedStatus = selectedStatus,
-                        onStatusSelected = onStatusSelected,
-                    )
-                    GendersFilter(
-                        selectedGender = selectedGender,
-                        onGenderSelected = onGenderSelected,
-                    )
-                }
-            }
+            )
         }
 
         LazyColumn(
             modifier =
                 Modifier
                     .fillMaxSize()
-                    .padding(innerPadding),
+                    .padding(innerPadding)
+                    .padding(horizontal = 8.dp),
         ) {
             characters?.let { characters ->
                 stickyHeader {
@@ -164,9 +175,15 @@ fun CharactersScreenPreview() {
     RickAndMortyTheme {
         StatelessCharactersScreen(
             characters = listOf(),
+            query = "",
+            isLoading = false,
+            selectedGender = null,
+            selectedStatus = null,
+            filterCount = 0,
             onQueryChange = {},
             onStatusSelected = {},
             onGenderSelected = {},
+            onApplyFiltersButtonClick = {},
         )
     }
 }

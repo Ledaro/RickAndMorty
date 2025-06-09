@@ -9,7 +9,10 @@ object CharactersViewModelContract {
         val isLoading: Boolean = false,
         val characters: List<Character>? = null,
         val query: String = "",
-        val selectedStatus: Status? = null,
-        val selectedGender: Gender? = null,
+        val pendingSelectedGender: Gender? = null,
+        val pendingSelectedStatus: Status? = null,
+        val appliedSelectedGender: Gender? = null,
+        val appliedSelectedStatus: Status? = null,
+        val activeFilterCount: Int = 0,
     )
 }

@@ -1,21 +1,16 @@
 package com.zeltech.rickandmorty.features.characters.presentation
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
-import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -38,6 +33,9 @@ import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.paging.LoadState
+import androidx.paging.compose.LazyPagingItems
+import androidx.paging.compose.collectAsLazyPagingItems
 import com.zeltech.rickandmorty.R
 import com.zeltech.rickandmorty.common.domain.model.Character
 import com.zeltech.rickandmorty.common.presentation.CustomSearchBar
@@ -52,8 +50,10 @@ import com.zeltech.rickandmorty.ui.theme.RickAndMortyTheme
 fun CharactersScreen() {
     val viewModel = hiltViewModel<CharactersViewModel>()
     val state by viewModel.state.collectAsStateWithLifecycle()
+    val pagingItems = viewModel.pager.collectAsLazyPagingItems()
 
     StatelessCharactersScreen(
+        pagingItems = pagingItems,
         characters = state.characters,
         query = state.query,
         isLoading = state.isLoading,
@@ -71,6 +71,7 @@ fun CharactersScreen() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun StatelessCharactersScreen(
+    pagingItems: LazyPagingItems<Character>,
     isLoading: Boolean = false,
     characters: List<Character>?,
     query: String = "",
@@ -125,7 +126,6 @@ fun StatelessCharactersScreen(
                 onDismissRequest = { showBottomSheet = false },
             )
         }
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -156,10 +156,25 @@ fun StatelessCharactersScreen(
                     LazyColumn(
                         modifier = Modifier
                             .fillMaxSize()
-                            .padding(horizontal = 8.dp),
+                            .padding(horizontal = 8.dp)
                     ) {
-                        items(characters) { character ->
-                            CharacterItem(character)
+                        items(pagingItems.itemCount) { index ->
+                            val character = pagingItems[index]
+                            if (character != null) {
+                                CharacterItem(character)
+                            }
+                        }
+
+                        pagingItems.apply {
+                            when {
+                                loadState.append is LoadState.Loading -> {
+                                    item { CircularProgressIndicator(modifier = Modifier.padding(16.dp)) }
+                                }
+
+                                loadState.refresh is LoadState.Error -> {
+                                    item { Text("Błąd ładowania danych") }
+                                }
+                            }
                         }
                     }
                 }
@@ -168,22 +183,22 @@ fun StatelessCharactersScreen(
     }
 }
 
-@PreviewLightDark
-@Composable
-fun CharactersScreenPreview() {
-    RickAndMortyTheme {
-        StatelessCharactersScreen(
-            characters = listOf(),
-            query = "",
-            isLoading = false,
-            selectedGender = null,
-            selectedStatus = null,
-            filterCount = 0,
-            onQueryChange = {},
-            onStatusSelected = {},
-            onGenderSelected = {},
-            onClearFiltersClick = {},
-            onApplyFiltersButtonClick = {},
-        )
-    }
-}
+//@PreviewLightDark
+//@Composable
+//fun CharactersScreenPreview() {
+//    RickAndMortyTheme {
+//        StatelessCharactersScreen(
+//            characters = listOf(),
+//            query = "",
+//            isLoading = false,
+//            selectedGender = null,
+//            selectedStatus = null,
+//            filterCount = 0,
+//            onQueryChange = {},
+//            onStatusSelected = {},
+//            onGenderSelected = {},
+//            onClearFiltersClick = {},
+//            onApplyFiltersButtonClick = {},
+//        )
+//    }
+//}

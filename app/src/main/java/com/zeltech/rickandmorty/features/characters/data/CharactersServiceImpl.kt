@@ -24,6 +24,7 @@ class CharactersServiceImpl
                 ?.toDomain()
 
         override suspend fun getFilteredCharacters(
+            page: Int?,
             name: String?,
             status: String?,
             gender: String?,
@@ -31,6 +32,7 @@ class CharactersServiceImpl
             client
                 .query(
                     CharactersQuery(
+                        Optional.presentIfNotNull(page),
                         Optional.presentIfNotNull(name),
                         Optional.presentIfNotNull(status),
                         Optional.presentIfNotNull(gender),

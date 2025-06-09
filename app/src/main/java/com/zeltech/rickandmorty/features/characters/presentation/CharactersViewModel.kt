@@ -30,23 +30,9 @@ class CharactersViewModel
         val state: StateFlow<UiState> = _state.asStateFlow()
 
         private val _searchQueryFlow = MutableStateFlow("")
-        private val _selectedGenderFlow = MutableStateFlow<Gender?>(null)
-        private val _selectedStatusFlow = MutableStateFlow<Status?>(null)
 
         init {
             getAllCharacters()
-
-//            viewModelScope.launch {
-//                combine(
-//                    _searchQueryFlow.debounce(500).distinctUntilChanged(),
-//                    _selectedStatusFlow,
-//                    _selectedGenderFlow,
-//                ) { query, status, gender ->
-//                    Triple(query, status, gender)
-//                }.collectLatest { (query, status, gender) ->
-//                    performSearchWithFilters(query, status, gender)
-//                }
-//            }
 
             viewModelScope.launch {
                 _searchQueryFlow.debounce(500).distinctUntilChanged().collectLatest { query ->
@@ -143,22 +129,30 @@ class CharactersViewModel
         fun onApplyFiltersClicked() {
             val pendingStatus = _state.value.pendingSelectedStatus
             val pendingGender = _state.value.pendingSelectedGender
-            val currentQuery = _state.value.query // Or _searchQueryInput.value
+            val currentQuery = _state.value.query
 
             _state.update { currentState ->
                 currentState.copy(
-                    // Promote pending filters to applied filters
                     appliedSelectedStatus = pendingStatus,
                     appliedSelectedGender = pendingGender,
                     activeFilterCount = calculateAppliedFiltersCount(pendingStatus, pendingGender),
                 )
             }
 
-            // Perform the search with the newly applied filters and current query
             performSearchWithFilters(
                 query = currentQuery,
                 statusToUse = pendingStatus,
                 genderToUse = pendingGender,
             )
+        }
+
+        fun onClearFiltersClicked() {
+            _state.update { currentState ->
+                currentState.copy(
+                    pendingSelectedStatus = null,
+                    pendingSelectedGender = null,
+                    activeFilterCount = 0,
+                )
+            }
         }
     }

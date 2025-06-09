@@ -57,6 +57,7 @@ fun CharactersScreen() {
         onQueryChange = viewModel::onSearchQueryChanged,
         onStatusSelected = viewModel::onPendingStatusSelected,
         onGenderSelected = viewModel::onPendingGenderSelected,
+        onClearFiltersClick = viewModel::onClearFiltersClicked,
         onApplyFiltersButtonClick = viewModel::onApplyFiltersClicked,
     )
 }
@@ -73,6 +74,7 @@ fun StatelessCharactersScreen(
     onQueryChange: (String) -> Unit,
     onStatusSelected: (Status?) -> Unit,
     onGenderSelected: (Gender?) -> Unit,
+    onClearFiltersClick: () -> Unit,
     onApplyFiltersButtonClick: () -> Unit,
 ) {
     var showBottomSheet by remember { mutableStateOf(false) }
@@ -117,6 +119,7 @@ fun StatelessCharactersScreen(
                 selectedGender = selectedGender,
                 onStatusSelected = onStatusSelected,
                 onGenderSelected = onGenderSelected,
+                onClearFiltersClick = onClearFiltersClick,
                 onApplyFiltersButtonClick = {
                     onApplyFiltersButtonClick()
                     showBottomSheet = false
@@ -183,6 +186,7 @@ fun CharactersScreenPreview() {
             onQueryChange = {},
             onStatusSelected = {},
             onGenderSelected = {},
+            onClearFiltersClick = {},
             onApplyFiltersButtonClick = {},
         )
     }

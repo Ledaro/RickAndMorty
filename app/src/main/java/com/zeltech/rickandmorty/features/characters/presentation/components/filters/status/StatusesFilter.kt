@@ -3,11 +3,9 @@ package com.zeltech.rickandmorty.features.characters.presentation.components.fil
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
-import androidx.compose.material.icons.filled.Done
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Icon
@@ -30,11 +28,9 @@ fun StatusesFilter(
         Text(
             text = "Status",
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(horizontal = 16.dp),
         )
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.padding(horizontal = 16.dp),
         ) {
             statuses.forEach { status ->
                 val isCurrentlySelected = selectedStatus == status

@@ -29,11 +29,9 @@ fun GendersFilter(
         Text(
             text = "Gender",
             color = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.padding(horizontal = 16.dp),
         )
         FlowRow(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
-            modifier = Modifier.padding(horizontal = 16.dp),
         ) {
             genders.forEach { gender ->
                 val isCurrentlySelected = selectedGender == gender

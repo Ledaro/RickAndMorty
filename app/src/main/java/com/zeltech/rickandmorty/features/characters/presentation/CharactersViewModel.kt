@@ -55,15 +55,13 @@ constructor(
             _appliedStatus,
             _appliedGender
         ) { query, status, gender ->
-            // Triple to hold the parameters that will trigger a new PagingSource
             Triple(query, status, gender)
         }
-            .distinctUntilChanged() // Only proceed if the combined params actually changed
-            .flatMapLatest { (query, status, gender) -> // When params change, create new Pager flow
+            .distinctUntilChanged()
+            .flatMapLatest { (query, status, gender) ->
                 Pager(
                     config = PagingConfig(pageSize = 20, enablePlaceholders = false),
                     pagingSourceFactory = {
-                        // isLoading will be set to false by observing LoadStates from PagingDataAdapter
                         CharactersPagingSource(
                             service = charactersService,
                             name = if (query.isNotBlank()) query else null,
@@ -76,14 +74,11 @@ constructor(
             .cachedIn(viewModelScope)
 
     init {
-        // You might still want a debounced flow for the input text field
-        // if you want to update _uiState.query immediately but _appliedQuery with debounce.
         viewModelScope.launch {
-            _state.map { it.query } // Observe the query from UI state
-                .debounce(500L) // Debounce for UI responsiveness if needed, Pager uses its own debounce on _appliedQuery
+            _state.map { it.query }
+                .debounce(500L)
                 .distinctUntilChanged()
                 .collectLatest { queryFromUi ->
-                    // This is where we update the StateFlow that drives the Pager
                     _appliedQuery.value = queryFromUi
                 }
         }

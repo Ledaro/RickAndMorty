@@ -84,4 +84,8 @@ dependencies {
 
     //Paging3
     implementation(libs.androidx.paging.compose)
+
+    //Firebase
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.auth)
 }
